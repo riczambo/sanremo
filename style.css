@@ -2,16 +2,20 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     transition: background-color 0.5s, color 0.5s;
+    background-position: center;
+    background-size: cover;
 }
 
 .light-theme {
     background-color: #fff;
     color: #000;
+    background-image: url('images/lm_bg.jpg');
 }
 
 .dark-theme {
     background-color: #333;
     color: #fff;
+    background-image: url('images/dm_bg.jpg');
 }
 
 #themeSwitch {
@@ -30,14 +34,30 @@ body {
     cursor: pointer;
 }
 
-h1 {
-    font-size: 2em;
-    margin-top: 20px;
+.dark-theme table {
+    border-color: #ddd;
 }
 
-h2 {
-    font-size: 1.2em;
-    margin-top: 5px;
+.dark-theme th {
+    background-color: #555;
+    color: #fff;
+}
+
+.dark-theme td {
+    background-color: #444;
+    color: #fff;
+}
+
+h1 {
+    font-size: 2em;
+    margin-top: 50px;
+    margin-bottom: 2px;
+}
+
+h3 {
+    font-size: 14px;
+    margin-top: 1px;
+    margin-bottom: 40px;
 }
 
 table {
