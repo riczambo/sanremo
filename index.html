@@ -1,4 +1,3 @@
-<!-- Aggiorna il tuo file index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,13 +26,11 @@
         <tbody>
             <tr>
                 <td>
-                    <!-- Aggiungi un menu a tendina con opzioni dinamiche da "concorrenti.csv" -->
                     <select id="nomeDropdown"></select>
                 </td>
-                <td><input type="text" id="votoL" /></td>
-                <td><input type="text" id="votoM" /></td>
+                <td><input type="text" id="newVoteLella" /></td>
+                <td><input type="text" id="newVoteMambo" /></td>
             </tr>
-            <!-- Aggiungi più record se necessario -->
         </tbody>
     </table>
 
@@ -48,17 +45,80 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Esempio di riga -->
             <tr>
                 <td style="width: 25%;">5</td>
                 <td>Fiorella Mannoia</td>
                 <td style="width: 25%;">7</td>
             </tr>
-            <!-- Aggiungi più record caricati da Firebase -->
         </tbody>
     </table>
+    <script type="module">
+            //FUNZIONI DOPO HTML CARICATO
+            document.addEventListener('DOMContentLoaded', function () {
+                //DARK MODE
+                const body = document.body;
+                const themeToggle = document.getElementById('themeToggle');
+                themeToggle.addEventListener('change', toggleTheme);
+                function toggleTheme() {
+                    body.classList.toggle('dark-theme');
+                }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
-    <script src="script.js"></script>
+                //CARICO ELENCO CONCORRENTI DA FILE CSV
+                loadDropdownOptions();
+            });
+
+            //CARICO ELEMENTI MENU TENDINA CONCORRENTI
+            function loadDropdownOptions() {
+                const nomeDropdown = document.getElementById('nomeDropdown');
+                fetch('concorrenti.csv')
+                .then(response => response.text())
+                .then(data => {
+                    const options = data.split(',');
+                    options.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.trim();
+                        optionElement.textContent = option.trim();
+                        nomeDropdown.appendChild(optionElement);
+                    });
+                });
+            }
+
+            //FIREBASE OPTIONS
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+            const firebaseConfig = {
+            apiKey: "AIzaSyA4trb1Kag8PqQdlJo9itdC4smdA2rrupU",
+            authDomain: "sanremo2024-19451.firebaseapp.com",
+            databaseURL: "https://sanremo2024-19451-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "sanremo2024-19451",
+            storageBucket: "sanremo2024-19451.appspot.com",
+            messagingSenderId: "995131868941",
+            appId: "1:995131868941:web:3ecc60e662f0da81a95244"
+            };
+            const app = initializeApp(firebaseConfig);
+
+            import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+            const db = getDatabase();
+
+            let newConcorrente = document.getElementById('nomeDropdown');
+            let newVoteLella = document.getElementById('newVoteLella');
+            let newVoteMambo = document.getElementById('newVoteMambo');
+            let addNewVote = document.getElementById('addNewVote');
+            
+            function addVote(){
+                set(ref(db, 'VoteSet/' + newConcorrente.value), {
+                    concorrente: newConcorrente.value,
+                    votoLella: newVoteLella.value,
+                    votoMambo: newVoteMambo.value
+                }).then(()=>{
+                    alert("Il tuo voto è stato aggiunto :)");
+                }).catch(()=>{
+                    alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+                    console.log(error);
+                })
+            }
+
+            addNewVote.addEventListener('click', addVote);
+
+    </script>
 </body>
 </html>

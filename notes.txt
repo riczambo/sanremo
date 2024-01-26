@@ -1,3 +1,45 @@
 Schemo logico database
 
 concorrenti(concId, concNome, votoL, votoZ)
+
+----------------------
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD6ZDKtS4EdNdt1ZdXmW1ROtbvMqfJwXzA",
+    authDomain: "sanremo2024-e605d.firebaseapp.com",
+    databaseURL: "https://sanremo2024-e605d-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "sanremo2024-e605d",
+    storageBucket: "sanremo2024-e605d.appspot.com",
+    messagingSenderId: "494449933943",
+    appId: "1:494449933943:web:f928ac001e260bbf7e9072"
+};
+
+// inizializzo firebase
+firebase.initializeApp(firebaseConfig);*/
+
+
+--------------------------
+
+document.getElementById("newVote").addEventListener("addNewVote", addRow);
+
+//FUNZIONE CHE AGGIUNGE VOTI SU DATABASE
+function addRow() {
+
+    var concorrente = getElementVal("nomeDropdown");
+    var votoLella = getElementVal("newVoteLella");
+    var votoMambo = getElementVal("newVoteMambo");
+
+    console.log(concorrente, votoLella, votoMambo);
+
+    saveMessage(concorrente, votoLella, votoMambo);
+}
+
+const saveMessage = (concorrente, votoLella, votoMambo) => {
+    var newVote = sanremo2024DB.push();
+
+    newVote.set({
+        concorrente: concorrente,
+        votoLella : votoLella,
+        votoMambo : votoMambo,
+    })
+}

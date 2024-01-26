@@ -36,36 +36,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 //FIREBASE OPTIONS
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 const firebaseConfig = {
-    apiKey: "AIzaSyD6ZDKtS4EdNdt1ZdXmW1ROtbvMqfJwXzA",
-    authDomain: "sanremo2024-e605d.firebaseapp.com",
-    databaseURL: "https://sanremo2024-e605d-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "sanremo2024-e605d",
-    storageBucket: "sanremo2024-e605d.appspot.com",
-    messagingSenderId: "494449933943",
-    appId: "1:494449933943:web:f928ac001e260bbf7e9072"
+apiKey: "AIzaSyA4trb1Kag8PqQdlJo9itdC4smdA2rrupU",
+authDomain: "sanremo2024-19451.firebaseapp.com",
+databaseURL: "https://sanremo2024-19451-default-rtdb.europe-west1.firebasedatabase.app",
+projectId: "sanremo2024-19451",
+storageBucket: "sanremo2024-19451.appspot.com",
+messagingSenderId: "995131868941",
+appId: "1:995131868941:web:3ecc60e662f0da81a95244"
 };
+const app = initializeApp(firebaseConfig);
 
-// inizializzo firebase
-firebase.initializeApp(firebaseConfig);
-
-// creo reference al database
-var sanremo2024DB =  Firebase.database().ref("sanremo2024");
+import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+const db = getDatabase();
 
 document.getElementById("newVote").addEventListener("addNewVote", addRow);
 
-//FUNZIONE AGGIUNGE VOTI SU DATABASE
-function addRow(e) {
-    e.preventDefault();
+//FUNZIONE CHE AGGIUNGE VOTI SU DATABASE
+function addRow() {
 
-    var votoLella = getElementVal("votoL");
-    var votoMambo = getElementVal("votoM");
+    var concorrente = getElementVal("nomeDropdown");
+    var votoLella = getElementVal("newVoteLella");
+    var votoMambo = getElementVal("newVoteMambo");
 
-    console.log(votoLella, votoMambo);
-    
-    //document.getElementById("newVote").reset();
- }
+    console.log(concorrente, votoLella, votoMambo);
+
+    saveMessage(concorrente, votoLella, votoMambo);
+}
+
+const saveMessage = (concorrente, votoLella, votoMambo) => {
+    var newVote = sanremo2024DB.push();
+
+    newVote.set({
+        concorrente: concorrente,
+        votoLella : votoLella,
+        votoMambo : votoMambo,
+    })
+}
 
 const getElementVal = (id) => {
     return document.getElementById(id).value;
