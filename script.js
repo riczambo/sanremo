@@ -42,26 +42,48 @@ appId: "1:995131868941:web:3ecc60e662f0da81a95244"
 };
 const app = initializeApp(firebaseConfig);
 
-import {getDatabase, ref, child, get, set} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import {getDatabase, ref, child, get, update} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 const db = getDatabase();
 
-let newConcorrente = document.getElementById('nomeDropdown');
-let newVoteLella = document.getElementById('newVoteLella');
-let newVoteMambo = document.getElementById('newVoteMambo');
 let addNewVote = document.getElementById('addNewVote');
 let refreshStanding = document.getElementById('refreshStanding');
 
-function addVote(){
-    set(ref(db, 'VoteSet/' + newConcorrente.value), {
-        concorrente: newConcorrente.value,
-        votoLella: newVoteLella.value,
-        votoMambo: newVoteMambo.value
-    }).then(()=>{
-        alert("Il tuo voto è stato aggiunto :)");
-    }).catch(()=>{
-        alert("Qualcosa non ha funzionato: voto non aggiunto :()");
-        console.log(error);
-    })
+function updateVote(){
+    const newConcorrente = document.getElementById('nomeDropdown').value;
+    const newVoteLella = document.getElementById('newVoteLella').value;
+    const newVoteMambo = document.getElementById('newVoteMambo').value;
+
+    if (newVoteLella !== null && newVoteMambo !== null) {
+        update(ref(db, 'VoteSet/' + newConcorrente), {
+            votoLella: newVoteLella,
+            votoMambo: newVoteMambo
+        }).then(()=>{
+            alert("Il tuo voto è stato aggiunto :)");
+        }).catch(()=>{
+            alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+            console.log(error);
+        });
+    } else if (newVoteLella !== null) {
+        update(ref(db, 'VoteSet/' + newConcorrente), {
+            votoLella: newVoteLella
+        }).then(()=>{
+            alert("Il tuo voto è stato aggiunto :)");
+        }).catch(()=>{
+            alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+            console.log(error);
+        });
+    } else if (newVoteMambo !== null) {
+        update(ref(db, 'VoteSet/' + newConcorrente), {
+            votoMambo: newVoteMambo
+        }).then(()=>{
+            alert("Il tuo voto è stato aggiunto :)");
+        }).catch(()=>{
+            alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+            console.log(error);
+        });
+    } else {
+        alert("Nessun valore da aggiornare.");
+    }
 }
 
 function newStanding(){
@@ -98,4 +120,4 @@ function newStanding(){
 
 
 refreshStanding.addEventListener('click', newStanding);
-addNewVote.addEventListener('click', addVote);
+addNewVote.addEventListener('click', updateVote);
