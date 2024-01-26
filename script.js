@@ -1,14 +1,15 @@
-//DARK MODE
+//FUNZIONI DOPO HTML CARICATO
 document.addEventListener('DOMContentLoaded', function () {
+    //DARK MODE
     const body = document.body;
     const themeToggle = document.getElementById('themeToggle');
-
     themeToggle.addEventListener('change', toggleTheme);
-
-    // Funzione per cambiare il tema
     function toggleTheme() {
         body.classList.toggle('dark-theme');
     }
+
+    //CARICO ELENCO CONCORRENTI DA FILE CSV
+    loadDropdownOptions();
 });
 
 //CARICO ELEMENTI MENU TENDINA CONCORRENTI
@@ -27,14 +28,6 @@ function loadDropdownOptions() {
     });
 }
 
-//CARICO FUNZIONI DOPO HTML CARICATO
-document.addEventListener('DOMContentLoaded', function () {
-    loadDropdownOptions();
-    // Resto del tuo script...
-});
-
-
-
 //FIREBASE OPTIONS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 const firebaseConfig = {
@@ -51,30 +44,45 @@ const app = initializeApp(firebaseConfig);
 import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 const db = getDatabase();
 
-document.getElementById("newVote").addEventListener("addNewVote", addRow);
+let newConcorrente = document.getElementById('nomeDropdown');
+let newVoteLella = document.getElementById('newVoteLella');
+let newVoteMambo = document.getElementById('newVoteMambo');
+let addNewVote = document.getElementById('addNewVote');
+let refreshStanding = document.getElementById('refreshStanding');
+let voteLella = document.getElementById('voteLella');
+let listConcorrente = document.getElementById('listConcorrente');
+let voteMambo = document.getElementById('voteMambo');
 
-//FUNZIONE CHE AGGIUNGE VOTI SU DATABASE
-function addRow() {
-
-    var concorrente = getElementVal("nomeDropdown");
-    var votoLella = getElementVal("newVoteLella");
-    var votoMambo = getElementVal("newVoteMambo");
-
-    console.log(concorrente, votoLella, votoMambo);
-
-    saveMessage(concorrente, votoLella, votoMambo);
-}
-
-const saveMessage = (concorrente, votoLella, votoMambo) => {
-    var newVote = sanremo2024DB.push();
-
-    newVote.set({
-        concorrente: concorrente,
-        votoLella : votoLella,
-        votoMambo : votoMambo,
+function addVote(){
+    set(ref(db, 'VoteSet/' + newConcorrente.value), {
+        concorrente: newConcorrente.value,
+        votoLella: newVoteLella.value,
+        votoMambo: newVoteMambo.value
+    }).then(()=>{
+        alert("Il tuo voto è stato aggiunto :)");
+    }).catch(()=>{
+        alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+        console.log(error);
     })
 }
 
-const getElementVal = (id) => {
-    return document.getElementById(id).value;
+function newStanding(){
+    const dbRef = ref(db);
+
+    get(child(dbRef, 'VoteSet/' + newConcorrente.value)).then((snapshot)=>{
+        if(snapshot.exists()){
+            voteLella.value = snapshot.val().votoLella;
+            listConcorrente.value = snapshot.val().concorrente;
+            voteMambo.value = snapshot.val().votoMambo;
+        }
+        else{
+            alert("Errore nella stampa della classifica");
+        }
+    }).catch(()=>{
+        alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+        console.log(error);
+    })
 }
+
+refreshStanding.addEventListener('click', newStanding);
+addNewVote.addEventListener('click', addVote);
