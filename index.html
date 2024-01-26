@@ -1,4 +1,4 @@
-<!-- index.html -->
+<!-- Aggiorna il tuo file index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,32 +7,58 @@
     <link rel="stylesheet" href="style.css">
     <title>Sanremo 2024</title>
 </head>
-<!-- Inserisci il seguente codice sopra il tag </body> -->
-<div id="themeSwitch">
-    <label for="themeToggle">Dark Mode</label>
-    <input type="checkbox" id="themeToggle">
-</div>
 <body>
+    <div id="themeSwitch">
+        <label for="themeToggle">Dark Mode</label>
+        <input type="checkbox" id="themeToggle">
+    </div>
+
     <h1>Sanremo 2024</h1>
     <h3>by Lella&amp;Mambo</h3>
 
-    <table>
+    <table id="newVote">
         <thead>
             <tr>
-                <th></th>
-                <th>Lella</th>
-                <th>Mambo</th>
+                <th style="width: 40%;"><button onclick="addRow()">+</button></th>
+                <th style="width: 30%;">Lella</th>
+                <th style="width: 30%;">Mambo</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><input type="text" placeholder="Nome" /></td>
+                <td>
+                    <!-- Aggiungi un menu a tendina con opzioni dinamiche da "concorrenti.csv" -->
+                    <select id="nomeDropdown"></select>
+                </td>
                 <td><input type="text" placeholder="Voto Lella" /></td>
                 <td><input type="text" placeholder="Voto Mambo" /></td>
             </tr>
             <!-- Aggiungi più record se necessario -->
         </tbody>
     </table>
+
+    <h1>Classifiche</h1>
+
+    <table id="classifica">
+        <thead>
+            <tr>
+                <th>Lella</th>
+                <th><button onclick="updateRanking()">Aggiorna</button></th>
+                <th>Mambo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Esempio di riga -->
+            <tr>
+                <td style="width: 25%;">5</td>
+                <td></td>
+                <td style="width: 25%;">7</td>
+            </tr>
+            <!-- Aggiungi più record caricati da Firebase -->
+        </tbody>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -30,10 +30,6 @@ body {
     margin-right: 8px;
 }
 
-#themeToggle {
-    cursor: pointer;
-}
-
 .dark-theme table {
     border-color: #ddd;
 }
@@ -77,6 +73,6 @@ th {
 }
 
 input {
-    width: 50px;
+    width: 30px;
     text-align: center;
 }

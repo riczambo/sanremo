@@ -1,0 +1,3 @@
+Schemo logico database
+
+concorrenti(concId, concNome, votoL, votoZ)
