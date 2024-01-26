@@ -53,7 +53,7 @@ function updateVote(){
     const newVoteLella = document.getElementById('newVoteLella').value;
     const newVoteMambo = document.getElementById('newVoteMambo').value;
 
-    if (newVoteLella !== null && newVoteMambo !== null) {
+    if (newVoteLella !== "" && newVoteMambo !== "") {
         update(ref(db, 'VoteSet/' + newConcorrente), {
             votoLella: newVoteLella,
             votoMambo: newVoteMambo
@@ -63,7 +63,7 @@ function updateVote(){
             alert("Qualcosa non ha funzionato: voto non aggiunto :()");
             console.log(error);
         });
-    } else if (newVoteLella !== null) {
+    } else if (newVoteLella !== "" && newVoteMambo == "") {
         update(ref(db, 'VoteSet/' + newConcorrente), {
             votoLella: newVoteLella
         }).then(()=>{
@@ -72,7 +72,7 @@ function updateVote(){
             alert("Qualcosa non ha funzionato: voto non aggiunto :()");
             console.log(error);
         });
-    } else if (newVoteMambo !== null) {
+    } else if (newVoteLella == "" && newVoteMambo !== "") {
         update(ref(db, 'VoteSet/' + newConcorrente), {
             votoMambo: newVoteMambo
         }).then(()=>{
