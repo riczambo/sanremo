@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //CARICO ELENCO CONCORRENTI DA FILE CSV
     loadDropdownOptions();
+    newStanding();
 });
 
 //CARICO ELEMENTI MENU TENDINA CONCORRENTI
@@ -41,7 +42,7 @@ appId: "1:995131868941:web:3ecc60e662f0da81a95244"
 };
 const app = initializeApp(firebaseConfig);
 
-import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import {getDatabase, ref, child, get, set} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 const db = getDatabase();
 
 let newConcorrente = document.getElementById('nomeDropdown');
@@ -49,9 +50,6 @@ let newVoteLella = document.getElementById('newVoteLella');
 let newVoteMambo = document.getElementById('newVoteMambo');
 let addNewVote = document.getElementById('addNewVote');
 let refreshStanding = document.getElementById('refreshStanding');
-let voteLella = document.getElementById('voteLella');
-let listConcorrente = document.getElementById('listConcorrente');
-let voteMambo = document.getElementById('voteMambo');
 
 function addVote(){
     set(ref(db, 'VoteSet/' + newConcorrente.value), {
@@ -69,20 +67,35 @@ function addVote(){
 function newStanding(){
     const dbRef = ref(db);
 
-    get(child(dbRef, 'VoteSet/' + newConcorrente.value)).then((snapshot)=>{
+    get(child(dbRef, 'VoteSet')).then((snapshot)=>{
         if(snapshot.exists()){
-            voteLella.value = snapshot.val().votoLella;
-            listConcorrente.value = snapshot.val().concorrente;
-            voteMambo.value = snapshot.val().votoMambo;
+            const classificaTableBody = document.getElementById('classifica').getElementsByTagName('tbody')[0];
+            
+            classificaTableBody.innerHTML = '';
+
+            snapshot.forEach((childSnapshot) => {
+                const record = childSnapshot.val();
+                
+                const newRow = classificaTableBody.insertRow();
+
+                const cellLella = newRow.insertCell(0);
+                cellLella.textContent = record.votoLella;
+
+                const cellListConcorrente = newRow.insertCell(1);
+                cellListConcorrente.textContent = record.concorrente;
+
+                const cellMambo = newRow.insertCell(2);
+                cellMambo.textContent = record.votoMambo;
+            });
+        } else {
+            alert("Nessun record trovato in VoteSet");
         }
-        else{
-            alert("Errore nella stampa della classifica");
-        }
-    }).catch(()=>{
-        alert("Qualcosa non ha funzionato: voto non aggiunto :()");
+    }).catch((error) => {
+        alert("Qualcosa non ha funzionato: errore nella stampa della classifica");
         console.log(error);
-    })
+    });
 }
+
 
 refreshStanding.addEventListener('click', newStanding);
 addNewVote.addEventListener('click', addVote);
