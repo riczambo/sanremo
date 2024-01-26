@@ -33,10 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Resto del tuo script...
 });
 
-//FUNZIONE AGGIUNGE VOTI SU DATABASE
-function addRow() {
-   // Puoi utilizzare Firebase per gestire i dati, ma richiede la configurazione di Firebase e l'accesso a Internet.
-}
+
+
+//FIREBASE OPTIONS
 
 const firebaseConfig = {
     apiKey: "AIzaSyD6ZDKtS4EdNdt1ZdXmW1ROtbvMqfJwXzA",
@@ -54,16 +53,19 @@ firebase.initializeApp(firebaseConfig);
 // creo reference al database
 var sanremo2024DB =  Firebase.database().ref("sanremo2024");
 
-document.getElementById("contactForm").addEventListener("submit", submitForm);
+document.getElementById("newVote").addEventListener("addNewVote", addRow);
 
-function submitForm(e) {
+//FUNZIONE AGGIUNGE VOTI SU DATABASE
+function addRow(e) {
     e.preventDefault();
 
-    var votoLella = getElementVal("votoLella");
-    var votoMambo = getElementVal("votoMambo");
+    var votoLella = getElementVal("votoL");
+    var votoMambo = getElementVal("votoM");
 
     console.log(votoLella, votoMambo);
-}
+    
+    //document.getElementById("newVote").reset();
+ }
 
 const getElementVal = (id) => {
     return document.getElementById(id).value;
