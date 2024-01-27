@@ -31,19 +31,28 @@ h3 {
 .standings-container {
     display: flex;
     justify-content: space-between;
+    margin: 0 10%;
 }
+
 .standings {
-    width: 35%;
-    margin: auto;
+    width: 45%; /* o qualsiasi percentuale che preferisci */
 }
-.standings td, .standings th{
+
+.standings table {
+    width: 90%;
+}
+
+.standings td,
+.standings th {
     margin: 20px auto;
     border: 1px solid #4b4848;
     padding: 12px;
     text-align: center;
     background-color: #2a2c3c;
     color: #ffffffdc;
+    height: 20px; /* Altezza fissa delle righe */
 }
+
 
 .select-box {
     font-family: 'Roboto', sans-serif;
@@ -83,21 +92,22 @@ h3 {
 }
 
 .button-style {
+    font-family: 'Roboto', sans-serif;
     display: inline-block;
     outline: 0;
-    border: 0;
     cursor: pointer;
     font-weight: 400;
-    color: #fff;
+    color: #f0e8e8;
     font-size: 15px;
     padding: 5px 11px;
-    border-radius: 50px;
-    background-image: linear-gradient(180deg, #7b50cc, #2f1e5c); /* Tonalità di blu e viola desaturati */
-    box-shadow: 0 4px 11px 0 rgba(37, 44, 97, 0.15), 0 1px 3px 0 rgba(93, 100, 148, 0.20);
+    border-radius: 30px;
+    box-shadow: 0 8px 15px 0 rgba(71, 87, 170, 0.15), 0 4px 6px 0 rgba(93, 100, 148, 0.20);
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    background: #8570be;
     transition: all 0.2s ease-out;
 }
 .button-style:hover {
-    box-shadow: 0 8px 22px 0 rgba(226, 228, 238, 0.15), 0 4px 6px 0 rgba(93, 100, 148, 0.20);
+    box-shadow: 7px 7px 15px #9374b6,-4px -4px 13px #4a3596, inset 4px 4px 8px rgba(209, 217, 230, 0.2),  inset -8px -8px 8px rgba(255, 255, 255, 0.2);
 }
 
 input {
