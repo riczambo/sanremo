@@ -10,15 +10,17 @@ function loadDropdownOptions() {
     fetch('concorrenti.csv')
     .then(response => response.text())
     .then(data => {
-        const options = data.split(',');
+        const options = data.split(',').map(option => option.trim());
+        options.sort();
         options.forEach(option => {
             const optionElement = document.createElement('option');
-            optionElement.value = option.trim();
-            optionElement.textContent = option.trim();
+            optionElement.value = option;
+            optionElement.textContent = option;
             nomeDropdown.appendChild(optionElement);
         });
     });
 }
+
 
 //FIREBASE OPTIONS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
