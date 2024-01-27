@@ -1,19 +1,10 @@
 //FUNZIONI DOPO HTML CARICATO
 document.addEventListener('DOMContentLoaded', function () {
-    //DARK MODE
-    const body = document.body;
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('change', toggleTheme);
-    function toggleTheme() {
-        body.classList.toggle('dark-theme');
-    }
-
-    //CARICO ELENCO CONCORRENTI DA FILE CSV
     loadDropdownOptions();
     newStanding();
 });
 
-//CARICO ELEMENTI MENU TENDINA CONCORRENTI
+//CARICO ELEMENTI MENU TENDINA CONCORRENTI DA CSV
 function loadDropdownOptions() {
     const nomeDropdown = document.getElementById('nomeDropdown');
     fetch('concorrenti.csv')
@@ -86,34 +77,53 @@ function updateVote(){
     }
 }
 
-function newStanding(){
+function newStanding() {
     const dbRef = ref(db);
 
-    get(child(dbRef, 'VoteSet')).then((snapshot)=>{
-        if(snapshot.exists()){
-            const classificaTableBody = document.getElementById('classifica').getElementsByTagName('tbody')[0];
-            
-            classificaTableBody.innerHTML = '';
+    get(child(dbRef, 'VoteSet')).then((snapshot) => {
+        if (snapshot.exists()) {
+            const classificaLellaTableBody = document.getElementById('classificaLella').getElementsByTagName('tbody')[0];
+            const classificaMamboTableBody = document.getElementById('classificaMambo').getElementsByTagName('tbody')[0];
 
+            // Converto gli snapshot in un array di oggetti
+            const recordsArray = [];
             snapshot.forEach((childSnapshot) => {
-                const record = childSnapshot.val();
-                
-                const newRow = classificaTableBody.insertRow();
+                recordsArray.push(childSnapshot.val());
+            });
 
-                const cellLella = newRow.insertCell(0);
-                cellLella.textContent = record.votoLella;
+            // Ordino l'array in base a votoLella e votoMambo in ordine decrescente
+            const recordsArrayLella = [...recordsArray].sort((a, b) => b.votoLella - a.votoLella);
+            const recordsArrayMambo = [...recordsArray].sort((a, b) => b.votoMambo - a.votoMambo);
 
-                const cellListConcorrente = newRow.insertCell(1);
-                cellListConcorrente.textContent = record.concorrente;
+            // Pulisco il corpo delle tabelle
+            classificaLellaTableBody.innerHTML = '';
+            classificaMamboTableBody.innerHTML = '';
 
-                const cellMambo = newRow.insertCell(2);
-                cellMambo.textContent = record.votoMambo;
+            // Aggiungo le righe alle tabelle in base agli array ordinati
+            recordsArrayLella.forEach((record) => {
+                const newRow = classificaLellaTableBody.insertRow();
+
+                const cellConcorrente = newRow.insertCell(0);
+                cellConcorrente.textContent = record.concorrente;
+
+                const cellVoto = newRow.insertCell(1);
+                cellVoto.textContent = record.votoLella;
+            });
+
+            recordsArrayMambo.forEach((record) => {
+                const newRow = classificaMamboTableBody.insertRow();
+
+                const cellConcorrente = newRow.insertCell(0);
+                cellConcorrente.textContent = record.concorrente;
+
+                const cellVoto = newRow.insertCell(1);
+                cellVoto.textContent = record.votoMambo;
             });
         } else {
             alert("Nessun record trovato in VoteSet");
         }
     }).catch((error) => {
-        alert("Qualcosa non ha funzionato: errore nella stampa della classifica");
+        alert("Qualcosa non ha funzionato: errore nella stampa delle classifiche");
         console.log(error);
     });
 }
