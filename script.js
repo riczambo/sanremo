@@ -50,8 +50,8 @@ let refreshStanding = document.getElementById('refreshStanding');
 
 function updateVote(){
     const newConcorrente = document.getElementById('nomeDropdown').value;
-    const newVoteLella = document.getElementById('newVoteLella').value;
-    const newVoteMambo = document.getElementById('newVoteMambo').value;
+    const newVoteLella = document.getElementById('newVoteLella').value.trim();
+    const newVoteMambo = document.getElementById('newVoteMambo').value.trim();
 
     if (newVoteLella !== "" && newVoteMambo !== "") {
         update(ref(db, 'VoteSet/' + newConcorrente), {
