@@ -94,8 +94,8 @@ function newStanding() {
             });
 
             // Ordino l'array in base a votoLella e votoMambo in ordine decrescente
-            const recordsArrayLella = [...recordsArray].sort((a, b) => b.votoLella - a.votoLella);
-            const recordsArrayMambo = [...recordsArray].sort((a, b) => b.votoMambo - a.votoMambo);
+            const recordsArrayLella = recordsArray.slice().sort((a, b) => b.votoLella - a.votoLella);
+            const recordsArrayMambo = recordsArray.slice().sort((a, b) => b.votoMambo - a.votoMambo);
 
             // Pulisco il corpo delle tabelle
             classificaLellaTableBody.innerHTML = '';
@@ -129,7 +129,6 @@ function newStanding() {
         console.log(error);
     });
 }
-
 
 refreshStanding.addEventListener('click', newStanding);
 addNewVote.addEventListener('click', updateVote);
