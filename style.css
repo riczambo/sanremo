@@ -44,8 +44,8 @@ h3 {
     text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
 }
 
-/* CONTENITORI (Effetto Vetro / Glassmorphism) */
-.standings-container, .newVote, #login-container {
+/* CONTENITORI GENERALI (Effetto Vetro) */
+.standings-container, #login-container {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -54,29 +54,33 @@ h3 {
     padding: 20px;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     width: 100%;
-    max-width: 600px; /* Non diventa troppo largo su PC */
+    max-width: 600px;
     margin-bottom: 20px;
 }
 
-/* INPUT E SELECT */
+/* INPUT E SELECT (Stile Unificato) */
 .select-box, .input-box {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(0, 0, 0, 0.3);
     color: white;
     font-size: 1rem;
-    outline: none;
     transition: 0.3s;
+    /* Stile Vetro Input */
+    height: 46px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    outline: none;
 }
 
 .select-box:focus, .input-box:focus {
     border-color: var(--primary-color);
     background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(255, 0, 204, 0.3);
 }
 
-/* Opzioni del menu a tendina (devono essere leggibili) */
 option {
     background-color: #302b63;
     color: white;
@@ -94,7 +98,7 @@ option {
     transition: transform 0.2s, box-shadow 0.2s;
     text-transform: uppercase;
     letter-spacing: 1px;
-    width: 100%; /* Su mobile occupa tutto lo spazio */
+    width: 100%;
 }
 
 .button-style:hover {
@@ -113,22 +117,45 @@ option {
     margin-bottom: 20px;
 }
 
-/* TABELLA VOTI - LAYOUT */
-/* Per allineare Input e Button sulla stessa riga */
-.newVote tr {
+/* ZONA VOTO (Layout Flexbox) */
+.vote-container {
     display: flex;
-    gap: 10px;
-    justify-content: center;
+    gap: 15px;
     align-items: center;
-    flex-wrap: wrap; /* Su schermi piccoli va a capo */
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px; /* Allineato agli altri box */
+    margin-bottom: 20px; /* Spazio sotto */
+    
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
 }
-.newVote td {
-    display: block;
-    flex: 1; /* Si dividono lo spazio */
+
+/* Gestione proporzioni voto */
+.vote-container .select-box {
+    flex: 3;
+    min-width: 0;
 }
-/* Forziamo il bottone + a essere più piccolo */
-#addNewVote {
+
+.vote-container .input-box {
+    flex: 1;
+    min-width: 60px;
+    text-align: center;
+}
+
+.vote-container #addNewVote {
+    flex: 1.5;
     min-width: 80px;
+    height: 46px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
 }
 
 /* CLASSIFICA TABLE */
@@ -157,16 +184,44 @@ tr:hover {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* PRIMO POSTO */
-tr:first-child td {
-    color: #ffd700; /* Oro */
-    font-weight: bold;
+/* PODIO */
+/* Primo posto (Oro) */
+#mainTable tbody tr:nth-child(1) td {
+    color: #fcce03; 
+    font-weight: 800;
     font-size: 1.1rem;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
-/* RESPONSIVE */
-@media (max-width: 480px) {
+/* Secondo posto (Argento) */
+#mainTable tbody tr:nth-child(2) td {
+    color: #dbd6d6;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-shadow: 0 0 8px rgba(224, 224, 224, 0.4);
+}
+
+/* Terzo posto (Bronzo) */
+#mainTable tbody tr:nth-child(3) td {
+    color: #a56322;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-shadow: 0 0 8px rgba(205, 127, 50, 0.4);
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 600px) {
+    .vote-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .vote-container .select-box, 
+    .vote-container .input-box, 
+    .vote-container #addNewVote {
+        width: 100%;
+        flex: none;
+    }
+    
     h1 { font-size: 1.8rem; }
-    .newVote tr { flex-direction: column; }
-    .newVote td { width: 100%; }
 }
