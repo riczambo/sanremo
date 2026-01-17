@@ -1,116 +1,172 @@
+/* Importiamo un font moderno da Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+    --primary-color: #ff00cc; /* Fucsia Sanremo */
+    --accent-color: #333399; /* Blu profondo */
+    --text-color: #ffffff;
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
-    text-align: center;
-    transition: background-color 0.5s, color 0.5s;
-    background-position: center;
-    background-size: cover;
-    background-color: #1d1f29; /* Colore di sfondo viola desaturato */
-    color: #dcdcdc; /* Colore del testo desaturato */
+    font-family: 'Montserrat', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
 h1 {
-    font-size: 45px;
-    margin: 50px 0 2px;
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
 }
+
 h3 {
-    font-size: 16px;
-    margin: 1px 0 40px;
-}
-
-.newVote {
-    width: 50%;
-    margin: 10px auto;
-    background-color: transparent;
-    border: none;
-}
-.newVote td, .newVote th {
-    background-color: transparent;
-    border: none;
-}
-
-.standings-container {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 10%;
-}
-
-.standings {
-    width: 45%; /* o qualsiasi percentuale che preferisci */
-}
-
-.standings table {
-    width: 90%;
-}
-
-.standings td,
-.standings th {
-    margin: 20px auto;
-    border: 1px solid #4b4848;
-    padding: 12px;
-    text-align: center;
-    background-color: #2a2c3c;
-    color: #ffffffdc;
-    height: 20px; /* Altezza fissa delle righe */
-}
-
-
-.select-box {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    border-radius: 6px;
-    line-height: 1.5;
-    padding: 5px 10px;
-    transition: box-shadow 100ms ease-in, border 100ms ease-in, background-color 100ms ease-in;
-    border: 2px solid #381c9e;
-    color: rgb(12, 12, 17);
-    background: #c0abe6;
-    display: block;
-    height: 36px;
-}
-.select-box:hover {
-    border-color: #61588b;
-}
-.select-box:focus{
-    border-color: #592b9e;
-    background: #fff;
-}
-
-.input-box {
-    font-family: 'Roboto', sans-serif;
-    font-size: 20px;
-    border-radius: 6px;
-    line-height: 1.5;
-    padding: 5px 10px;
-    border: 2px solid #381c9e;
-    color: rgb(12, 12, 17);
-    background: #c0abe6;
-    display: block;
-    height: 20px;
-}
-.input-box:hover {
-    border-color: #61588b;
-}
-
-.button-style {
-    font-family: 'Roboto', sans-serif;
-    display: inline-block;
-    outline: 0;
-    cursor: pointer;
     font-weight: 400;
-    color: #f0e8e8;
-    font-size: 15px;
-    padding: 5px 11px;
-    border-radius: 30px;
-    box-shadow: 0 8px 15px 0 rgba(71, 87, 170, 0.15), 0 4px 6px 0 rgba(93, 100, 148, 0.20);
-    border: 1px solid rgba(255, 255, 255, 0.3); 
-    background: #8570be;
-    transition: all 0.2s ease-out;
-}
-.button-style:hover {
-    box-shadow: 7px 7px 15px #9374b6,-4px -4px 13px #4a3596, inset 4px 4px 8px rgba(209, 217, 230, 0.2),  inset -8px -8px 8px rgba(255, 255, 255, 0.2);
+    margin-bottom: 30px;
+    opacity: 0.9;
 }
 
-input {
-    width: 40px;
+/* UTENTE ATTIVO */
+#displayUser {
+    color: #00ffcc; /* Verde acqua neon */
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+}
+
+/* CONTENITORI (Effetto Vetro / Glassmorphism) */
+.standings-container, .newVote, #login-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    width: 100%;
+    max-width: 600px; /* Non diventa troppo largo su PC */
+    margin-bottom: 20px;
+}
+
+/* INPUT E SELECT */
+.select-box, .input-box {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.select-box:focus, .input-box:focus {
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Opzioni del menu a tendina (devono essere leggibili) */
+option {
+    background-color: #302b63;
+    color: white;
+}
+
+/* BOTTONI */
+.button-style {
+    background: linear-gradient(45deg, #ff00cc, #333399);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 100%; /* Su mobile occupa tutto lo spazio */
+}
+
+.button-style:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+#logoutBtn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #bbb;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+}
+
+/* TABELLA VOTI - LAYOUT */
+/* Per allineare Input e Button sulla stessa riga */
+.newVote tr {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Su schermi piccoli va a capo */
+}
+.newVote td {
+    display: block;
+    flex: 1; /* Si dividono lo spazio */
+}
+/* Forziamo il bottone + a essere più piccolo */
+#addNewVote {
+    min-width: 80px;
+}
+
+/* CLASSIFICA TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px 15px;
     text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+    background-color: rgba(255, 0, 204, 0.2);
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    border-radius: 4px;
+}
+
+tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* PRIMO POSTO */
+tr:first-child td {
+    color: #ffd700; /* Oro */
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    h1 { font-size: 1.8rem; }
+    .newVote tr { flex-direction: column; }
+    .newVote td { width: 100%; }
 }
