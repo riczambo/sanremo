@@ -1,29 +1,7 @@
-//FUNZIONI DOPO HTML CARICATO
-document.addEventListener('DOMContentLoaded', function () {
-    loadDropdownOptions();
-    newStanding();
-});
-
-//CARICO ELEMENTI MENU TENDINA CONCORRENTI DA CSV
-function loadDropdownOptions() {
-    const nomeDropdown = document.getElementById('nomeDropdown');
-    fetch('concorrenti.csv')
-    .then(response => response.text())
-    .then(data => {
-        const options = data.split(',').map(option => option.trim());
-        options.sort();
-        options.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option;
-            optionElement.textContent = option;
-            nomeDropdown.appendChild(optionElement);
-        });
-    });
-}
-
-
 //FIREBASE OPTIONS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import {getDatabase, ref, child, get, update} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+
 const firebaseConfig = {
 apiKey: "AIzaSyA4trb1Kag8PqQdlJo9itdC4smdA2rrupU",
 authDomain: "sanremo2024-19451.firebaseapp.com",
@@ -33,102 +11,184 @@ storageBucket: "sanremo2024-19451.appspot.com",
 messagingSenderId: "995131868941",
 appId: "1:995131868941:web:3ecc60e662f0da81a95244"
 };
-const app = initializeApp(firebaseConfig);
 
-import {getDatabase, ref, child, get, update} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+// Lista dei partecipanti
+const allowedUsers = ["Francesca", "Riccardo", "Giulia L", "Giulia M", "Ospite"];
+
+const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
-let addNewVote = document.getElementById('addNewVote');
-let refreshStanding = document.getElementById('refreshStanding');
+// --- STATO DELL'APP ---
+let currentUser = null;
 
-function updateVote(){
-    const newConcorrente = document.getElementById('nomeDropdown').value;
-    const newVoteLella = document.getElementById('newVoteLella').value.trim();
-    const newVoteMambo = document.getElementById('newVoteMambo').value.trim();
+// --- DOM ELEMENTS ---
+const loginContainer = document.getElementById('login-container');
+const appContainer = document.getElementById('app-container');
+const userSelect = document.getElementById('userSelect');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const displayUser = document.getElementById('displayUser');
+const nomeDropdown = document.getElementById('nomeDropdown');
+const votoInput = document.getElementById('votoInput');
+const addNewVoteBtn = document.getElementById('addNewVote');
+const refreshStandingBtn = document.getElementById('refreshStanding');
+const tableBody = document.getElementById('mainTable').getElementsByTagName('tbody')[0];
 
-    if (newVoteLella !== "" && newVoteMambo !== "") {
-        update(ref(db, 'VoteSet/' + newConcorrente), {
-            votoLella: newVoteLella,
-            votoMambo: newVoteMambo
-        }).then(()=>{
-            alert("Il tuo voto è stato aggiunto :)");
-        }).catch(()=>{
-            alert("Qualcosa non ha funzionato: voto non aggiunto :()");
-            console.log(error);
-        });
-    } else if (newVoteLella !== "" && newVoteMambo == "") {
-        update(ref(db, 'VoteSet/' + newConcorrente), {
-            votoLella: newVoteLella
-        }).then(()=>{
-            alert("Il tuo voto è stato aggiunto :)");
-        }).catch(()=>{
-            alert("Qualcosa non ha funzionato: voto non aggiunto :()");
-            console.log(error);
-        });
-    } else if (newVoteLella == "" && newVoteMambo !== "") {
-        update(ref(db, 'VoteSet/' + newConcorrente), {
-            votoMambo: newVoteMambo
-        }).then(()=>{
-            alert("Il tuo voto è stato aggiunto :)");
-        }).catch(()=>{
-            alert("Qualcosa non ha funzionato: voto non aggiunto :()");
-            console.log(error);
-        });
-    } else {
-        alert("Nessun valore da aggiornare.");
+// --- INIT ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadUsers();
+    loadCantanti();
+    
+    // Controlla se c'è già un utente salvato
+    const savedUser = localStorage.getItem('sanremoUser');
+    if(savedUser && allowedUsers.includes(savedUser)){
+        enterApp(savedUser);
     }
-}
+});
 
-function newStanding() {
-    const dbRef = ref(db);
-
-    get(child(dbRef, 'VoteSet')).then((snapshot) => {
-        if (snapshot.exists()) {
-            const classificaLellaTableBody = document.getElementById('classificaLella').getElementsByTagName('tbody')[0];
-            const classificaMamboTableBody = document.getElementById('classificaMambo').getElementsByTagName('tbody')[0];
-
-            // Converto gli snapshot in un array di oggetti
-            const recordsArray = [];
-            snapshot.forEach((childSnapshot) => {
-                recordsArray.push(childSnapshot.val());
-            });
-
-            // Ordino l'array in base a votoLella e votoMambo in ordine decrescente
-            const recordsArrayLella = recordsArray.slice().sort((a, b) => b.votoLella - a.votoLella);
-            const recordsArrayMambo = recordsArray.slice().sort((a, b) => b.votoMambo - a.votoMambo);
-
-            // Pulisco il corpo delle tabelle
-            classificaLellaTableBody.innerHTML = '';
-            classificaMamboTableBody.innerHTML = '';
-
-            // Aggiungo le righe alle tabelle in base agli array ordinati
-            recordsArrayLella.forEach((record) => {
-                const newRow = classificaLellaTableBody.insertRow();
-
-                const cellConcorrente = newRow.insertCell(0);
-                cellConcorrente.textContent = record.concorrente;
-
-                const cellVoto = newRow.insertCell(1);
-                cellVoto.textContent = record.votoLella;
-            });
-
-            recordsArrayMambo.forEach((record) => {
-                const newRow = classificaMamboTableBody.insertRow();
-
-                const cellConcorrente = newRow.insertCell(0);
-                cellConcorrente.textContent = record.concorrente;
-
-                const cellVoto = newRow.insertCell(1);
-                cellVoto.textContent = record.votoMambo;
-            });
-        } else {
-            alert("Nessun record trovato in VoteSet");
-        }
-    }).catch((error) => {
-        alert("Qualcosa non ha funzionato: errore nella stampa delle classifiche");
-        console.log(error);
+// --- FUNZIONI DI LOGIN/LOGOUT ---
+function loadUsers() {
+    allowedUsers.forEach(user => {
+        const opt = document.createElement('option');
+        opt.value = user;
+        opt.textContent = user;
+        userSelect.appendChild(opt);
     });
 }
 
-refreshStanding.addEventListener('click', newStanding);
-addNewVote.addEventListener('click', updateVote);
+loginBtn.addEventListener('click', () => {
+    const selected = userSelect.value;
+    if (selected) {
+        enterApp(selected);
+    } else {
+        alert("Seleziona chi sei!");
+    }
+});
+
+logoutBtn.addEventListener('click', () => {
+    currentUser = null;
+    localStorage.removeItem('sanremoUser');
+    loginContainer.style.display = 'block';
+    appContainer.style.display = 'none';
+});
+
+function enterApp(username) {
+    currentUser = username;
+    localStorage.setItem('sanremoUser', username);
+    displayUser.textContent = currentUser;
+    
+    loginContainer.style.display = 'none';
+    appContainer.style.display = 'block';
+    
+    // Carica subito la classifica
+    generateStandings();
+}
+
+// --- CARICAMENTO CANTANTI (CSV) ---
+function loadCantanti() {
+    fetch('concorrenti.csv')
+    .then(response => response.text())
+    .then(data => {
+        // Gestione più robusta del CSV (split per riga o virgola)
+        const options = data.split(/[,\n]+/).map(option => option.trim()).filter(o => o !== "");
+        options.sort();
+        nomeDropdown.innerHTML = ""; // Pulisce
+        options.forEach(option => {
+            const el = document.createElement('option');
+            el.value = option;
+            el.textContent = option;
+            nomeDropdown.appendChild(el);
+        });
+    });
+}
+
+// --- LOGICA DI VOTO ---
+function sendVote() {
+    const artista = nomeDropdown.value;
+    const voto = votoInput.value.trim();
+
+    if (!currentUser) return alert("Errore utente non loggato");
+    if (artista === "" || voto === "") return alert("Inserisci tutti i dati");
+
+    // Sostituisco spazi e caratteri speciali nel nome artista per sicurezza chiave DB (opzionale ma consigliato)
+    // Ma per semplicità usiamo la stringa così com'è se corrisponde al CSV
+    
+    // Scrittura nel DB: Path = VoteSet / Artista / Utente = Voto
+    const updates = {};
+    updates[`Sanremo2025/${artista}/${currentUser}`] = voto;
+
+    update(ref(db), updates).then(() => {
+        alert(`Voto di ${currentUser} per ${artista} salvato!`);
+        votoInput.value = ''; // Reset campo
+        generateStandings(); // Ricarica classifica
+    }).catch((error) => {
+        console.error(error);
+        alert("Errore nel salvataggio");
+    });
+}
+
+addNewVoteBtn.addEventListener('click', sendVote);
+
+// --- CLASSIFICHE DINAMICHE ---
+function generateStandings() {
+    const dbRef = ref(db);
+    
+    get(child(dbRef, 'Sanremo2025')).then((snapshot) => {
+        tableBody.innerHTML = ''; // Pulisci tabella
+
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            let ranking = [];
+
+            // Trasforma l'oggetto DB in un array ordinabile
+            // data è { "Achille Lauro": { "Lella": "10", "Mambo": "5" }, ... }
+            
+            Object.keys(data).forEach(artista => {
+                const votiArtista = data[artista];
+                
+                // Controlla se l'utente corrente ha votato questo artista
+                if (votiArtista && votiArtista[currentUser]) {
+                    ranking.push({
+                        artista: artista,
+                        voto: parseFloat(votiArtista[currentUser])
+                    });
+                }
+            });
+
+            // Ordina decrescente
+            ranking.sort((a, b) => b.voto - a.voto);
+
+            // Stampa a video
+            ranking.forEach((item, index) => {
+                const row = tableBody.insertRow();
+                
+                // Posizione
+                const cellPos = row.insertCell(0);
+                cellPos.textContent = index + 1;
+                if(index === 0) cellPos.style.fontWeight = "bold"; // Evidenzia il primo
+
+                // Nome
+                const cellName = row.insertCell(1);
+                cellName.textContent = item.artista;
+
+                // Voto
+                const cellVote = row.insertCell(2);
+                cellVote.textContent = item.voto;
+            });
+
+            if (ranking.length === 0) {
+                 const row = tableBody.insertRow();
+                 const cell = row.insertCell(0);
+                 cell.colSpan = 3;
+                 cell.textContent = "Non hai ancora votato nessuno!";
+            }
+
+        } else {
+            console.log("Nessun dato disponibile");
+        }
+    }).catch((error) => {
+        console.error(error);
+    });
+}
+
+refreshStandingBtn.addEventListener('click', generateStandings);
