@@ -22,6 +22,19 @@ body {
     padding: 20px;
 }
 
+/* --- LOGICA DI VISIBILITA' --- */
+/* Questo nasconde l'app finché non fai login */
+#app-container {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* Nascondiamo di default, JS lo renderà visible (display: block) */
+#app-container { display: none; }
+
 h1 {
     font-weight: 800;
     font-size: 2.5rem;
@@ -35,6 +48,36 @@ h3 {
     font-weight: 400;
     margin-bottom: 30px;
     opacity: 0.9;
+}
+
+/* --- LOGIN E REGISTRAZIONE --- */
+.user-selector { 
+    text-align: center; 
+    margin-top: 50px; 
+}
+
+.login-divider {
+    margin: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    position: relative;
+}
+
+.login-divider span {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #24243e; /* Trucco per coprire la riga */
+    padding: 0 10px;
+    font-size: 0.8rem;
+    color: #ccc;
+    border-radius: 10px;
+}
+
+.small-title { 
+    font-size: 1rem; 
+    margin-bottom: 10px; 
+    color: var(--primary-color); 
 }
 
 /* UTENTE ATTIVO */
@@ -66,7 +109,6 @@ h3 {
     color: white;
     font-size: 1rem;
     transition: 0.3s;
-    /* Stile Vetro Input */
     height: 46px;
     box-sizing: border-box;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -124,9 +166,8 @@ option {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 600px; /* Allineato agli altri box */
-    margin-bottom: 20px; /* Spazio sotto */
-    
+    max-width: 600px;
+    margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 15px;
@@ -135,7 +176,6 @@ option {
     box-sizing: border-box;
 }
 
-/* Gestione proporzioni voto */
 .vote-container .select-box {
     flex: 3;
     min-width: 0;

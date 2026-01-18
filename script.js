@@ -1,22 +1,22 @@
-//FIREBASE OPTIONS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import {getDatabase, ref, child, get, update} from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+import { getDatabase, ref, child, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { firebaseConfig } from './config.js';
-
-// Lista dei partecipanti
-const allowedUsers = ["Francesca", "Riccardo", "Giulia L", "Giulia M", "Ospite"];
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
-// --- STATO DELL'APP ---
-let currentUser = null;
-
 // --- DOM ELEMENTS ---
+// Login Section
 const loginContainer = document.getElementById('login-container');
-const appContainer = document.getElementById('app-container');
-const userSelect = document.getElementById('userSelect');
+const loginUserIn = document.getElementById('loginUser');
+const loginPassIn = document.getElementById('loginPass');
 const loginBtn = document.getElementById('loginBtn');
+// Register Section
+const regUserIn = document.getElementById('regUser');
+const regPassIn = document.getElementById('regPass');
+const regBtn = document.getElementById('regBtn');
+// App Section
+const appContainer = document.getElementById('app-container');
 const logoutBtn = document.getElementById('logoutBtn');
 const displayUser = document.getElementById('displayUser');
 const nomeDropdown = document.getElementById('nomeDropdown');
@@ -25,42 +25,93 @@ const addNewVoteBtn = document.getElementById('addNewVote');
 const refreshStandingBtn = document.getElementById('refreshStanding');
 const tableBody = document.getElementById('mainTable').getElementsByTagName('tbody')[0];
 
+let currentUser = null;
+
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
-    loadUsers();
     loadCantanti();
-    
-    // Controlla se c'è già un utente salvato
+    // Auto-login se c'è memoria
     const savedUser = localStorage.getItem('sanremoUser');
-    if(savedUser && allowedUsers.includes(savedUser)){
+    if(savedUser){
+        // Opzionale: potremmo riverificare la password qui, ma per semplicità ci fidiamo del localStorage
         enterApp(savedUser);
     }
 });
 
-// --- FUNZIONI DI LOGIN/LOGOUT ---
-function loadUsers() {
-    allowedUsers.forEach(user => {
-        const opt = document.createElement('option');
-        opt.value = user;
-        opt.textContent = user;
-        userSelect.appendChild(opt);
-    });
-}
+// --- GESTIONE UTENTI (LOGIN & REGISTRAZIONE) ---
 
-loginBtn.addEventListener('click', () => {
-    const selected = userSelect.value;
-    if (selected) {
-        enterApp(selected);
-    } else {
-        alert("Seleziona chi sei!");
+// 1. REGISTRAZIONE
+regBtn.addEventListener('click', () => {
+    const username = regUserIn.value.trim();
+    const password = regPassIn.value.trim();
+
+    if(username === "" || password === "") {
+        alert("Inserisci nome e password per registrarti.");
+        return;
     }
+
+    // Controlliamo se esiste già
+    const dbRef = ref(db);
+    get(child(dbRef, `Users/${username}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            alert("Questo nome utente è già preso! Scegline un altro.");
+        } else {
+            // Creiamo l'utente
+            const updates = {};
+            updates[`Users/${username}`] = password;
+            
+            update(dbRef, updates).then(() => {
+                alert("Utente creato con successo! Ora puoi accedere.");
+                regUserIn.value = "";
+                regPassIn.value = "";
+                // Opzionale: autologin immediato
+                // enterApp(username);
+            }).catch((err) => {
+                alert("Errore creazione utente");
+                console.error(err);
+            });
+        }
+    });
 });
 
+// 2. LOGIN
+loginBtn.addEventListener('click', () => {
+    const username = loginUserIn.value.trim();
+    const password = loginPassIn.value.trim();
+
+    if(username === "" || password === "") {
+        alert("Inserisci i dati.");
+        return;
+    }
+
+    const dbRef = ref(db);
+    get(child(dbRef, `Users/${username}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            const savedPassword = snapshot.val();
+            if (savedPassword === password) {
+                enterApp(username);
+            } else {
+                alert("Password errata!");
+            }
+        } else {
+            alert("Utente non trovato. Registrati qui sotto!");
+        }
+    }).catch((err) => {
+        console.error(err);
+        alert("Errore di connessione.");
+    });
+});
+
+// 3. LOGOUT
 logoutBtn.addEventListener('click', () => {
     currentUser = null;
     localStorage.removeItem('sanremoUser');
     loginContainer.style.display = 'block';
     appContainer.style.display = 'none';
+    
+    // Pulisci i campi
+    loginUserIn.value = "";
+    loginPassIn.value = "";
 });
 
 function enterApp(username) {
@@ -71,19 +122,18 @@ function enterApp(username) {
     loginContainer.style.display = 'none';
     appContainer.style.display = 'block';
     
-    // Carica subito la classifica
     generateStandings();
 }
 
-// --- CARICAMENTO CANTANTI (CSV) ---
+// --- LOGICA APP (Identica a prima) ---
+
 function loadCantanti() {
     fetch('concorrenti.csv')
     .then(response => response.text())
     .then(data => {
-        // Gestione più robusta del CSV (split per riga o virgola)
         const options = data.split(/[,\n]+/).map(option => option.trim()).filter(o => o !== "");
         options.sort();
-        nomeDropdown.innerHTML = ""; // Pulisce
+        nomeDropdown.innerHTML = "";
         options.forEach(option => {
             const el = document.createElement('option');
             el.value = option;
@@ -93,25 +143,21 @@ function loadCantanti() {
     });
 }
 
-// --- LOGICA DI VOTO ---
 function sendVote() {
     const artista = nomeDropdown.value;
     const voto = votoInput.value.trim();
 
-    if (!currentUser) return alert("Errore utente non loggato");
-    if (artista === "" || voto === "") return alert("Inserisci tutti i dati");
+    if (!currentUser) return alert("Errore: ricarica la pagina");
+    if (artista === "" || voto === "") return alert("Inserisci il voto");
 
-    // Sostituisco spazi e caratteri speciali nel nome artista per sicurezza chiave DB (opzionale ma consigliato)
-    // Ma per semplicità usiamo la stringa così com'è se corrisponde al CSV
-    
-    // Scrittura nel DB: Path = VoteSet / Artista / Utente = Voto
+    // Path DB: Sanremo2025 -> Artista -> Utente -> Voto
     const updates = {};
     updates[`Sanremo2025/${artista}/${currentUser}`] = voto;
 
     update(ref(db), updates).then(() => {
-        alert(`Voto di ${currentUser} per ${artista} salvato!`);
-        votoInput.value = ''; // Reset campo
-        generateStandings(); // Ricarica classifica
+        alert(`Voto salvato!`);
+        votoInput.value = ''; 
+        generateStandings(); 
     }).catch((error) => {
         console.error(error);
         alert("Errore nel salvataggio");
@@ -120,24 +166,18 @@ function sendVote() {
 
 addNewVoteBtn.addEventListener('click', sendVote);
 
-// --- CLASSIFICHE DINAMICHE ---
 function generateStandings() {
     const dbRef = ref(db);
     
     get(child(dbRef, 'Sanremo2025')).then((snapshot) => {
-        tableBody.innerHTML = ''; // Pulisci tabella
+        tableBody.innerHTML = ''; 
 
         if (snapshot.exists()) {
             const data = snapshot.val();
             let ranking = [];
 
-            // Trasforma l'oggetto DB in un array ordinabile
-            // data è { "Achille Lauro": { "Lella": "10", "Mambo": "5" }, ... }
-            
             Object.keys(data).forEach(artista => {
                 const votiArtista = data[artista];
-                
-                // Controlla se l'utente corrente ha votato questo artista
                 if (votiArtista && votiArtista[currentUser]) {
                     ranking.push({
                         artista: artista,
@@ -146,23 +186,17 @@ function generateStandings() {
                 }
             });
 
-            // Ordina decrescente
             ranking.sort((a, b) => b.voto - a.voto);
 
-            // Stampa a video
             ranking.forEach((item, index) => {
                 const row = tableBody.insertRow();
                 
-                // Posizione
                 const cellPos = row.insertCell(0);
                 cellPos.textContent = index + 1;
-                if(index === 0) cellPos.style.fontWeight = "bold"; // Evidenzia il primo
-
-                // Nome
+                
                 const cellName = row.insertCell(1);
                 cellName.textContent = item.artista;
 
-                // Voto
                 const cellVote = row.insertCell(2);
                 cellVote.textContent = item.voto;
             });
@@ -173,9 +207,6 @@ function generateStandings() {
                  cell.colSpan = 3;
                  cell.textContent = "Non hai ancora votato nessuno!";
             }
-
-        } else {
-            console.log("Nessun dato disponibile");
         }
     }).catch((error) => {
         console.error(error);
