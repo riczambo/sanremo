@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <div id="notification-area"></div>
     <div id="login-container" class="user-selector">
         
         <h1>Accedi</h1>
@@ -39,7 +40,7 @@
         <div class="vote-container">
             <select class="select-box" id="nomeDropdown">
                 </select>
-            <input type="number" step="0.1" class="input-box" id="votoInput" placeholder="Voto" />
+            <input type="number" step="0.1" min="0" max="10" class="input-box" id="votoInput" placeholder="Voto" />
             <button class="button-style" id="addNewVote">VOTA</button>
         </div>
         

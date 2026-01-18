@@ -46,7 +46,7 @@ regBtn.addEventListener('click', () => {
     const password = regPassIn.value.trim();
 
     if(username === "" || password === "") {
-        alert("Inserisci nome e password per registrarti.");
+        showToast("Inserisci nome e password per registrarti.");
         return;
     }
 
@@ -54,20 +54,20 @@ regBtn.addEventListener('click', () => {
     const dbRef = ref(db);
     get(child(dbRef, `Users/${username}`)).then((snapshot) => {
         if (snapshot.exists()) {
-            alert("Questo nome utente è già preso! Scegline un altro.");
+            showToast("Questo nome utente è già preso! Scegline un altro.");
         } else {
             // Creiamo l'utente
             const updates = {};
             updates[`Users/${username}`] = password;
             
             update(dbRef, updates).then(() => {
-                alert("Utente creato con successo! Ora puoi accedere.");
+                showToast("Utente creato con successo! Ora puoi accedere.");
                 regUserIn.value = "";
                 regPassIn.value = "";
                 // Opzionale: autologin immediato
                 // enterApp(username);
             }).catch((err) => {
-                alert("Errore creazione utente");
+                showToast("Errore creazione utente");
                 console.error(err);
             });
         }
@@ -80,7 +80,7 @@ loginBtn.addEventListener('click', () => {
     const password = loginPassIn.value.trim();
 
     if(username === "" || password === "") {
-        alert("Inserisci i dati.");
+        showToast("Inserisci i dati.");
         return;
     }
 
@@ -91,14 +91,14 @@ loginBtn.addEventListener('click', () => {
             if (savedPassword === password) {
                 enterApp(username);
             } else {
-                alert("Password errata!");
+                showToast("Password errata!");
             }
         } else {
-            alert("Utente non trovato. Registrati qui sotto!");
+            showToast("Utente non trovato. Registrati qui sotto!");
         }
     }).catch((err) => {
         console.error(err);
-        alert("Errore di connessione.");
+        showToast("Errore di connessione.");
     });
 });
 
@@ -145,22 +145,27 @@ function loadCantanti() {
 
 function sendVote() {
     const artista = nomeDropdown.value;
-    const voto = votoInput.value.trim();
+    const votoString = votoInput.value.trim(); // Prendiamo la stringa grezza
+    const votoNum = parseFloat(votoString); // La convertiamo in numero
 
-    if (!currentUser) return alert("Errore: ricarica la pagina");
-    if (artista === "" || voto === "") return alert("Inserisci il voto");
+    if (!currentUser) return showToast("Errore: ricarica la pagina e fai login");
+    if (artista === "" || votoString === "") return showToast("Inserisci il voto");
 
-    // Path DB: Sanremo2025 -> Artista -> Utente -> Voto
+    if (votoNum < 0 || votoNum > 10) {
+        showToast("Il voto deve essere compreso tra 0 e 10!");
+        return;
+    }
+
     const updates = {};
-    updates[`Sanremo2025/${artista}/${currentUser}`] = voto;
+    updates[`Sanremo2026/${artista}/${currentUser}`] = votoString;
 
     update(ref(db), updates).then(() => {
-        alert(`Voto salvato!`);
+        showToast(`Voto salvato!`);
         votoInput.value = ''; 
         generateStandings(); 
     }).catch((error) => {
         console.error(error);
-        alert("Errore nel salvataggio");
+        showToast("Errore nel salvataggio");
     });
 }
 
@@ -169,7 +174,7 @@ addNewVoteBtn.addEventListener('click', sendVote);
 function generateStandings() {
     const dbRef = ref(db);
     
-    get(child(dbRef, 'Sanremo2025')).then((snapshot) => {
+    get(child(dbRef, 'Sanremo2026')).then((snapshot) => {
         tableBody.innerHTML = ''; 
 
         if (snapshot.exists()) {
@@ -211,6 +216,27 @@ function generateStandings() {
     }).catch((error) => {
         console.error(error);
     });
+}
+
+// --- FUNZIONE NOTIFICHE MODERNE ---
+function showToast(message, type = 'success') {
+    const container = document.getElementById('notification-area');
+    
+    // Crea l'elemento
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    // Aggiunge al DOM
+    container.appendChild(toast);
+    
+    // Rimuovi dopo 3 secondi
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.5s ease-out forwards';
+        toast.addEventListener('animationend', () => {
+            toast.remove();
+        });
+    }, 3000);
 }
 
 refreshStandingBtn.addEventListener('click', generateStandings);
