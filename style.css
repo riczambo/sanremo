@@ -35,6 +35,19 @@ body {
 /* =========================================
    2. LAYOUT & CONTENITORI
    ========================================= */
+/* Titolo Fisso in Alto */
+.main-title {
+    font-weight: 800;
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    text-align: center;
+    /* Effetto testo luminoso */
+    text-shadow: 0 0 20px rgba(255, 0, 204, 0.4);
+}
+
 /* Contenitore App Principale */
 #app-container {
     display: none; /* Gestito da JS */
@@ -45,12 +58,12 @@ body {
 
 /* Contenitore Login */
 #login-container {
-    margin-top: 50px;
+    margin-top: 10px; /* Ridotto perché c'è il titolo fisso sopra */
     width: 90%;
     max-width: 400px;
 }
 
-/* Glass Effect Card (Base per i box) */
+/* Glass Effect Card */
 .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
@@ -96,11 +109,13 @@ body {
 /* =========================================
    3. TIPOGRAFIA
    ========================================= */
-h1 {
-    text-align: center;
+/* Titolo Login (ACCEDI) - Più piccolo */
+.login-title {
+    font-size: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 20px;
+    font-weight: 700;
 }
 
 .section-title {
@@ -110,12 +125,14 @@ h1 {
     font-size: 1.1rem;
 }
 
+/* Titolo Crea Utente - Bianco */
 .small-title {
-    font-size: 0.9rem;
-    color: #ff00cc;
+    font-size: 1rem;
+    color: #ffffff; /* Bianco puro come richiesto */
     margin-top: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-align: center;
+    font-weight: 600;
 }
 
 .greeting {
@@ -128,13 +145,18 @@ h1 {
 }
 
 /* =========================================
-   4. FORM E INPUT
+   4. FORM E SPAZIATURA
    ========================================= */
-/* Wrapper per la card di voto */
-.vote-card {
+/* Gruppo Input + Button con distanziamento */
+.form-group {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 15px; /* Spazio tra input */
+}
+
+/* Aggiunge spazio extra sopra i bottoni dentro il form */
+.form-group button {
+    margin-top: 10px; 
 }
 
 /* Stile Base Input e Select */
@@ -159,7 +181,6 @@ h1 {
     box-shadow: 0 0 15px rgba(255, 0, 204, 0.2);
 }
 
-/* Wrapper per Select (Freccia Custom) */
 .input-wrapper {
     position: relative;
 }
@@ -184,7 +205,6 @@ option {
 /* =========================================
    5. BOTTONI
    ========================================= */
-/* Stile Base Bottone */
 .button-style {
     border: none;
     height: 50px;
@@ -203,17 +223,18 @@ option {
     transform: scale(0.98);
 }
 
-/* Varianti */
+/* Gradiente (Viola/Fucsia) */
 .gradient-btn {
     background: var(--primary-gradient);
     box-shadow: 0 4px 15px rgba(255, 0, 204, 0.3);
 }
 
+/* Secondario (Grigio scuro) */
 .secondary-btn {
-    background: linear-gradient(45deg, #444, #666);
+    background: linear-gradient(45deg, #555, #777); /* Leggermente più chiaro per leggibilità */
 }
 
-/* Bottone Piccolo (per Header) */
+/* Bottone Piccolo (Header) */
 .small-btn {
     width: auto;
     padding: 0 20px;
@@ -224,7 +245,7 @@ option {
     box-shadow: 0 4px 15px rgba(255, 0, 204, 0.2);
 }
 
-/* Bottone Logout (Trasparente) */
+/* Bottone Logout */
 .logout-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.3);
@@ -241,10 +262,10 @@ option {
     color: white;
 }
 
-/* Bottone Aggiorna Rotante */
+/* Bottone Icona (Refresh) */
 .icon-btn {
     width: 40px;      
-    height: 40px;    
+    height: 40px;     
     padding: 0;       
     display: flex;
     align-items: center;
@@ -255,12 +276,13 @@ option {
 .icon-btn svg {
     transition: transform 0.5s ease;
 }
+
 .icon-btn:hover svg, .icon-btn:active svg {
     transform: rotate(180deg);
 }
 
 /* =========================================
-   6. VISUAL ELEMENTS (Divisori)
+   6. VISUAL ELEMENTS
    ========================================= */
 .login-divider {
     margin: 25px 0;
@@ -309,13 +331,12 @@ td {
     font-size: 0.95rem;
 }
 
-/* Colori Podio */
 tbody tr:nth-child(1) td { color: var(--gold); font-weight: 800; font-size: 1.1rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
 tbody tr:nth-child(2) td { color: #e0e0e0; font-weight: 700; }
 tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
 
 /* =========================================
-   8. NOTIFICHE (TOAST)
+   8. NOTIFICHE
    ========================================= */
 #notification-area {
     position: fixed;
@@ -339,17 +360,12 @@ tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
     margin-bottom: 10px;
     animation: slideIn 0.3s ease-out forwards;
 }
-
 .toast.success { border-color: #00ffcc; color: #00ffcc; }
 .toast.error { border-color: #ff0055; color: #ff0055; }
-
 .toast.hiding {
     animation: fadeOut 0.5s ease-out forwards;
 }
 
-/* =========================================
-   9. ANIMAZIONI
-   ========================================= */
 @keyframes slideIn {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
@@ -360,9 +376,7 @@ tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
     to { transform: translateY(-20px); opacity: 0; }
 }
 
-/* =========================================
-   10. RESPONSIVE MOBILE
-   ========================================= */
+/* MOBILE RESPONSIVE */
 @media (max-width: 600px) {
-    h1 { font-size: 1.8rem; }
+    .main-title { font-size: 1.8rem; }
 }
