@@ -10,12 +10,12 @@
 
     <div id="notification-area"></div>
     <h1 class="main-title">SANREMO 2026</h1>
-    <div id="login-container" class="glass-card centered-card">
+    <div id="login-container" class="glass-card centered-card">   
         <h2 class="login-title">Accedi</h2>
         <div class="form-group">
             <input type="text" id="loginUser" class="input-box" placeholder="Nome Utente">
             <input type="password" id="loginPass" class="input-box" placeholder="Password">
-            <button id="loginBtn" class="button-style">Entra</button>
+            <button id="loginBtn" class="button-style gradient-btn">ENTRA</button>
         </div>
 
         <div class="login-divider">
@@ -26,7 +26,7 @@
         <div class="form-group">
             <input type="text" id="regUser" class="input-box" placeholder="Nuovo Nome">
             <input type="password" id="regPass" class="input-box" placeholder="Nuova Password">
-            <button id="regBtn" class="button-style secondary-btn">Registrati</button>
+            <button id="regBtn" class="button-style secondary-btn">REGISTRATI</button>
         </div>
     </div>
 
@@ -42,14 +42,16 @@
         <div class="main-content">
             <h3 class="section-title">Dai il tuo voto</h3>
             
-            <div class="vote-card glass-card">
-                <div class="input-wrapper">
-                    <select class="select-box" id="nomeDropdown"></select>
+            <div class="glass-card vote-card">
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <select class="select-box" id="nomeDropdown"></select>
                     </div>
-                
-                <input type="number" step="0.1" min="0" max="10" class="input-box" id="votoInput" placeholder="Voto (0-10)" />
-                
-                <button class="button-style gradient-btn" id="addNewVote">VOTA</button>
+                    
+                    <input type="number" step="0.1" min="0" max="10" class="input-box" id="votoInput" placeholder="Voto" />
+                    
+                    <button class="button-style gradient-btn" id="addNewVote">VOTA</button>
+                </div>
             </div>
             
             <hr class="separator">
