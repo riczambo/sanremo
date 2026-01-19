@@ -218,24 +218,28 @@ function generateStandings() {
     });
 }
 
-// --- FUNZIONE NOTIFICHE MODERNE ---
+// --- FUNZIONE NOTIFICHE ---
 function showToast(message, type = 'success') {
     const container = document.getElementById('notification-area');
-    
-    // Crea l'elemento
+    container.innerHTML = ''; 
+
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
     
-    // Aggiunge al DOM
     container.appendChild(toast);
     
-    // Rimuovi dopo 3 secondi
     setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.5s ease-out forwards';
+        toast.classList.add('hiding');
+        
         toast.addEventListener('animationend', () => {
             toast.remove();
         });
+        
+        setTimeout(() => {
+            if(toast.parentElement) toast.remove();
+        }, 600);
+        
     }, 3000);
 }
 

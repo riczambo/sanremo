@@ -1,10 +1,11 @@
-/* FONT */
+/* =========================================
+   1. SETUP & VARIABILI
+   ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
-/* VARIABILI */
 :root {
     --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    --glass-bg: rgba(25, 25, 40, 0.6); /* Più scuro per leggibilità */
+    --glass-bg: rgba(25, 25, 40, 0.6);
     --glass-border: 1px solid rgba(255, 255, 255, 0.1);
     --primary-gradient: linear-gradient(90deg, #ff00cc, #333399);
     --text-color: #ffffff;
@@ -12,7 +13,7 @@
     --gold: #ffd700;
 }
 
-/* RESET GLOBALE (Risolve il problema zoom/scroll laterale) */
+/* Reset Globali */
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -28,24 +29,44 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-x: hidden; /* Evita scroll orizzontale */
+    overflow-x: hidden;
 }
 
-/* --- LOGICA DISPLAY --- */
+/* =========================================
+   2. LAYOUT & CONTENITORI
+   ========================================= */
+/* Contenitore App Principale */
 #app-container {
     display: none; /* Gestito da JS */
     width: 100%;
-    max-width: 500px; /* Larghezza massima app tipo mobile */
+    max-width: 500px;
     padding: 20px;
 }
 
+/* Contenitore Login */
 #login-container {
     margin-top: 50px;
     width: 90%;
     max-width: 400px;
 }
 
-/* --- HEADER ROW (Nome + Logout) --- */
+/* Glass Effect Card (Base per i box) */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+.centered-card {
+    text-align: center;
+}
+
+/* Header Principale (Nome + Logout) */
 .header-row {
     display: flex;
     justify-content: space-between;
@@ -56,32 +77,25 @@ body {
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.greeting {
-    font-size: 1.2rem;
+/* Header Sezione (Titolo + Bottone Aggiorna) */
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
 }
 
-.active-user {
-    color: #00ffcc;
-    font-weight: 800;
+/* Wrapper Tabelle */
+.standings-wrapper {
+    padding: 0;
+    overflow: hidden;
+    margin-top: 10px;
 }
 
-.logout-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #ccc;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.logout-btn:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
-}
-
-/* --- TITOLI --- */
+/* =========================================
+   3. TIPOGRAFIA
+   ========================================= */
 h1 {
     text-align: center;
     text-transform: uppercase;
@@ -104,30 +118,26 @@ h1 {
     text-align: center;
 }
 
-/* --- GLASS CARDS (Contenitori) --- */
-.glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: var(--glass-border);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    width: 100%;
+.greeting {
+    font-size: 1.2rem;
 }
 
-.centered-card {
-    text-align: center;
+.active-user {
+    color: #00ffcc;
+    font-weight: 800;
 }
 
-/* --- MODULO VOTO (Stile Verticale) --- */
+/* =========================================
+   4. FORM E INPUT
+   ========================================= */
+/* Wrapper per la card di voto */
 .vote-card {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Input e Select Styles */
+/* Stile Base Input e Select */
 .input-box, .select-box {
     width: 100%;
     height: 50px;
@@ -140,15 +150,20 @@ h1 {
     outline: none;
     font-family: inherit;
     transition: 0.3s;
-    appearance: none; /* Rimuove stile default browser */
+    appearance: none;
 }
 
-/* Dropdown specifico */
+.input-box:focus, .select-box:focus {
+    border-color: #ff00cc;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 204, 0.2);
+}
+
+/* Wrapper per Select (Freccia Custom) */
 .input-wrapper {
     position: relative;
 }
 
-/* Aggiungiamo una freccia custom per il menu a tendina */
 .input-wrapper::after {
     content: '▼';
     font-size: 0.8rem;
@@ -160,19 +175,16 @@ h1 {
     pointer-events: none;
 }
 
-.input-box:focus, .select-box:focus {
-    border-color: #ff00cc;
-    background: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 15px rgba(255, 0, 204, 0.2);
-}
-
 option {
-    background-color: #24243e; /* Sfondo scuro per le opzioni */
+    background-color: #24243e;
     color: white;
     padding: 10px;
 }
 
-/* --- BOTTONI --- */
+/* =========================================
+   5. BOTTONI
+   ========================================= */
+/* Stile Base Bottone */
 .button-style {
     border: none;
     height: 50px;
@@ -187,6 +199,11 @@ option {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.button-style:active {
+    transform: scale(0.98);
+}
+
+/* Varianti */
 .gradient-btn {
     background: var(--primary-gradient);
     box-shadow: 0 4px 15px rgba(255, 0, 204, 0.3);
@@ -196,28 +213,49 @@ option {
     background: linear-gradient(45deg, #444, #666);
 }
 
-.refresh-btn {
+/* Bottone Piccolo (per Header) */
+.small-btn {
+    width: auto;
+    padding: 0 20px;
+    height: 40px;
+    font-size: 0.85rem;
     background: var(--primary-gradient);
-    margin-bottom: 25px; /* Distanza aumentata dalla classifica */
-    opacity: 0.9;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(255, 0, 204, 0.2);
 }
 
-.button-style:active {
-    transform: scale(0.98);
+/* Bottone Logout (Trasparente) */
+.logout-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #ccc;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-/* --- SEPARATORI --- */
+.logout-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* =========================================
+   6. VISUAL ELEMENTS (Divisori)
+   ========================================= */
 .login-divider {
     margin: 25px 0;
     border-top: 1px solid rgba(255,255,255,0.1);
     position: relative;
 }
+
 .login-divider span {
     position: absolute;
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1e1b36; /* Simula trasparenza coprendo la riga */
+    background: #1e1b36;
     padding: 0 10px;
     color: #888;
     font-size: 0.8rem;
@@ -229,12 +267,9 @@ option {
     margin: 30px 0;
 }
 
-/* --- TABELLA CLASSIFICA --- */
-.standings-wrapper {
-    padding: 0; /* Rimuoviamo padding dal contenitore per far toccare i bordi alla tabella */
-    overflow: hidden; /* Per i bordi arrotondati */
-}
-
+/* =========================================
+   7. TABELLA CLASSIFICA
+   ========================================= */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -256,12 +291,14 @@ td {
     font-size: 0.95rem;
 }
 
-/* Podio */
+/* Colori Podio */
 tbody tr:nth-child(1) td { color: var(--gold); font-weight: 800; font-size: 1.1rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
 tbody tr:nth-child(2) td { color: #e0e0e0; font-weight: 700; }
 tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
 
-/* --- NOTIFICHE (TOAST) --- */
+/* =========================================
+   8. NOTIFICHE (TOAST)
+   ========================================= */
 #notification-area {
     position: fixed;
     top: 20px;
@@ -281,14 +318,33 @@ tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: center;
     border: 1px solid rgba(255,255,255,0.1);
-    animation: slideIn 0.3s ease-out forwards;
     margin-bottom: 10px;
+    animation: slideIn 0.3s ease-out forwards;
 }
 
 .toast.success { border-color: #00ffcc; color: #00ffcc; }
 .toast.error { border-color: #ff0055; color: #ff0055; }
 
+.toast.hiding {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+/* =========================================
+   9. ANIMAZIONI
+   ========================================= */
 @keyframes slideIn {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-20px); opacity: 0; }
+}
+
+/* =========================================
+   10. RESPONSIVE MOBILE
+   ========================================= */
+@media (max-width: 600px) {
+    h1 { font-size: 1.8rem; }
 }
