@@ -1,13 +1,21 @@
-/* Importiamo un font moderno da Google Fonts */
+/* FONT */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
+/* VARIABILI */
 :root {
     --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
-    --primary-color: #ff00cc; /* Fucsia Sanremo */
-    --accent-color: #333399; /* Blu profondo */
+    --glass-bg: rgba(25, 25, 40, 0.6); /* Più scuro per leggibilità */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --primary-gradient: linear-gradient(90deg, #ff00cc, #333399);
     --text-color: #ffffff;
+    --input-bg: rgba(0, 0, 0, 0.3);
+    --gold: #ffd700;
+}
+
+/* RESET GLOBALE (Risolve il problema zoom/scroll laterale) */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -15,310 +23,272 @@ body {
     background: var(--bg-gradient);
     color: var(--text-color);
     margin: 0;
+    padding: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: hidden; /* Evita scroll orizzontale */
+}
+
+/* --- LOGICA DISPLAY --- */
+#app-container {
+    display: none; /* Gestito da JS */
+    width: 100%;
+    max-width: 500px; /* Larghezza massima app tipo mobile */
     padding: 20px;
 }
 
-/* --- LOGICA DI VISIBILITA' --- */
-/* Questo nasconde l'app finché non fai login */
-#app-container {
-    display: none;
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#login-container {
+    margin-top: 50px;
+    width: 90%;
+    max-width: 400px;
 }
-/* Nascondiamo di default, JS lo renderà visible (display: block) */
-#app-container { display: none; }
 
-h1 {
+/* --- HEADER ROW (Nome + Logout) --- */
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.greeting {
+    font-size: 1.2rem;
+}
+
+.active-user {
+    color: #00ffcc;
     font-weight: 800;
-    font-size: 2.5rem;
-    margin-bottom: 5px;
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #ccc;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* --- TITOLI --- */
+h1 {
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
+    margin-bottom: 20px;
 }
 
-h3 {
+.section-title {
     font-weight: 400;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     opacity: 0.9;
+    font-size: 1.1rem;
 }
 
-/* --- LOGIN E REGISTRAZIONE --- */
-.user-selector { 
-    text-align: center; 
-    margin-top: 50px; 
+.small-title {
+    font-size: 0.9rem;
+    color: #ff00cc;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
-.login-divider {
-    margin: 20px 0;
-    border-top: 1px solid rgba(255,255,255,0.2);
+/* --- GLASS CARDS (Contenitori) --- */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+.centered-card {
+    text-align: center;
+}
+
+/* --- MODULO VOTO (Stile Verticale) --- */
+.vote-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input e Select Styles */
+.input-box, .select-box {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--input-bg);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    font-family: inherit;
+    transition: 0.3s;
+    appearance: none; /* Rimuove stile default browser */
+}
+
+/* Dropdown specifico */
+.input-wrapper {
     position: relative;
 }
 
-.login-divider span {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #24243e; /* Trucco per coprire la riga */
-    padding: 0 10px;
+/* Aggiungiamo una freccia custom per il menu a tendina */
+.input-wrapper::after {
+    content: '▼';
     font-size: 0.8rem;
-    color: #ccc;
-    border-radius: 10px;
+    color: rgba(255,255,255,0.5);
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
-.small-title { 
-    font-size: 1rem; 
-    margin-bottom: 10px; 
-    color: var(--primary-color); 
-}
-
-/* UTENTE ATTIVO */
-#displayUser {
-    color: #00ffcc; /* Verde acqua neon */
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-}
-
-/* CONTENITORI GENERALI (Effetto Vetro) */
-.standings-container, #login-container {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: var(--glass-border);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 20px;
-}
-
-/* INPUT E SELECT (Stile Unificato) */
-.select-box, .input-box {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    color: white;
-    font-size: 1rem;
-    transition: 0.3s;
-    height: 46px;
-    box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
-    outline: none;
-}
-
-.select-box:focus, .input-box:focus {
-    border-color: var(--primary-color);
+.input-box:focus, .select-box:focus {
+    border-color: #ff00cc;
     background: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 10px rgba(255, 0, 204, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 204, 0.2);
 }
 
 option {
-    background-color: #302b63;
+    background-color: #24243e; /* Sfondo scuro per le opzioni */
     color: white;
+    padding: 10px;
 }
 
-/* BOTTONI */
+/* --- BOTTONI --- */
 .button-style {
-    background: linear-gradient(45deg, #ff00cc, #333399);
     border: none;
-    padding: 12px 24px;
-    border-radius: 50px;
+    height: 50px;
+    border-radius: 12px;
     color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: 700;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    width: 100%;
-}
-
-.button-style:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px var(--primary-color);
-}
-
-#logoutBtn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #bbb;
-    padding: 5px 10px;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 0.8rem;
-    margin-bottom: 20px;
-}
-
-/* ZONA VOTO (Layout Flexbox) */
-.vote-container {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
-    max-width: 600px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    box-sizing: border-box;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.vote-container .select-box {
-    flex: 3;
-    min-width: 0;
+.gradient-btn {
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 15px rgba(255, 0, 204, 0.3);
 }
 
-.vote-container .input-box {
-    flex: 1;
-    min-width: 60px;
-    text-align: center;
+.secondary-btn {
+    background: linear-gradient(45deg, #444, #666);
 }
 
-.vote-container #addNewVote {
-    flex: 1.5;
-    min-width: 80px;
-    height: 46px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
+.refresh-btn {
+    background: var(--primary-gradient);
+    margin-bottom: 25px; /* Distanza aumentata dalla classifica */
+    opacity: 0.9;
 }
 
-/* CLASSIFICA TABLE */
+.button-style:active {
+    transform: scale(0.98);
+}
+
+/* --- SEPARATORI --- */
+.login-divider {
+    margin: 25px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+}
+.login-divider span {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1b36; /* Simula trasparenza coprendo la riga */
+    padding: 0 10px;
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.separator {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 30px 0;
+}
+
+/* --- TABELLA CLASSIFICA --- */
+.standings-wrapper {
+    padding: 0; /* Rimuoviamo padding dal contenitore per far toccare i bordi alla tabella */
+    overflow: hidden; /* Per i bordi arrotondati */
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    padding: 12px 15px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 th {
-    background-color: rgba(255, 0, 204, 0.2);
-    color: #fff;
+    background: rgba(255, 0, 204, 0.15);
+    color: #ff00cc;
+    padding: 15px 10px;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     letter-spacing: 1px;
-    border-radius: 4px;
 }
 
-tr:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.95rem;
 }
 
-/* PODIO */
-/* Primo posto (Oro) */
-#mainTable tbody tr:nth-child(1) td {
-    color: #fcce03; 
-    font-weight: 800;
-    font-size: 1.1rem;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
+/* Podio */
+tbody tr:nth-child(1) td { color: var(--gold); font-weight: 800; font-size: 1.1rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+tbody tr:nth-child(2) td { color: #e0e0e0; font-weight: 700; }
+tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
 
-/* Secondo posto (Argento) */
-#mainTable tbody tr:nth-child(2) td {
-    color: #dbd6d6;
-    font-weight: 700;
-    font-size: 1.05rem;
-    text-shadow: 0 0 8px rgba(224, 224, 224, 0.4);
-}
-
-/* Terzo posto (Bronzo) */
-#mainTable tbody tr:nth-child(3) td {
-    color: #a56322;
-    font-weight: 700;
-    font-size: 1.05rem;
-    text-shadow: 0 0 8px rgba(205, 127, 50, 0.4);
-}
-
-/* --- NOTIFICHE MODERNE (TOAST) --- */
+/* --- NOTIFICHE (TOAST) --- */
 #notification-area {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000; /* Assicura che sia sopra tutto */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    z-index: 2000;
     width: 90%;
     max-width: 400px;
-    pointer-events: none; /* Così puoi cliccare sotto se non c'è notifica */
+    pointer-events: none;
 }
 
 .toast {
-    background: rgba(15, 12, 41, 0.95); /* Molto scuro quasi opaco */
+    background: #1e1b36;
     color: white;
-    padding: 15px 20px;
-    border-radius: 50px; /* Forma a pillola moderna */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    font-size: 0.95rem;
+    padding: 15px;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: center;
-    backdrop-filter: blur(5px);
     border: 1px solid rgba(255,255,255,0.1);
-    
-    /* Animazione di entrata */
     animation: slideIn 0.3s ease-out forwards;
-    opacity: 0;
-    transform: translateY(-20px);
+    margin-bottom: 10px;
 }
 
-/* Tipi di notifica */
-.toast.success {
-    border-color: #00ffcc; /* Verde acqua */
-    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
-}
-
-.toast.error {
-    border-color: #ff0055; /* Rosso acceso */
-    box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
-}
+.toast.success { border-color: #00ffcc; color: #00ffcc; }
+.toast.error { border-color: #ff0055; color: #ff0055; }
 
 @keyframes slideIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-/* RESPONSIVE MOBILE */
-@media (max-width: 600px) {
-    .vote-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .vote-container .select-box, 
-    .vote-container .input-box, 
-    .vote-container #addNewVote {
-        width: 100%;
-        flex: none;
-    }
-    
-    h1 { font-size: 1.8rem; }
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

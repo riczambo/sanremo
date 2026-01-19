@@ -2,17 +2,17 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sanremo 2026</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="notification-area"></div>
-    <div id="login-container" class="user-selector">
-        
+
+    <div id="login-container" class="glass-card centered-card">
         <h1>Accedi</h1>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div class="form-group">
             <input type="text" id="loginUser" class="input-box" placeholder="Nome Utente">
             <input type="password" id="loginPass" class="input-box" placeholder="Password">
             <button id="loginBtn" class="button-style">Entra</button>
@@ -23,44 +23,53 @@
         </div>
 
         <h3 class="small-title">Crea nuovo utente</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div class="form-group">
             <input type="text" id="regUser" class="input-box" placeholder="Nuovo Nome">
             <input type="password" id="regPass" class="input-box" placeholder="Nuova Password">
-            <button id="regBtn" class="button-style" style="background: linear-gradient(45deg, #444, #666);">Registrati</button>
+            <button id="regBtn" class="button-style secondary-btn">Registrati</button>
         </div>
-
     </div>
 
     <div id="app-container">
-        <h1>Sanremo 2026</h1>
-        <p>Ciao <span id="displayUser" class="active-user"></span>!</p>
-        <button id="logoutBtn" style="font-size: 0.8rem;">Esci</button>
-
-        <h3>Dai il tuo voto</h3>
-        <div class="vote-container">
-            <select class="select-box" id="nomeDropdown">
-                </select>
-            <input type="number" step="0.1" min="0" max="10" class="input-box" id="votoInput" placeholder="Voto" />
-            <button class="button-style" id="addNewVote">VOTA</button>
+        
+        <div class="header-row">
+            <div class="greeting">
+                Ciao <span id="displayUser" class="active-user"></span>!
+            </div>
+            <button id="logoutBtn" class="logout-btn">Esci</button>
         </div>
-        
-        <hr>
 
-        <h3>La tua Classifica</h3>
-        <button class="button-style" id="refreshStanding">Aggiorna</button>
-        
-        <div class="standings-container">
-            <table id="mainTable">
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Cantante</th>
-                        <th>Voto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <div class="main-content">
+            <h3 class="section-title">Dai il tuo voto</h3>
+            
+            <div class="vote-card glass-card">
+                <div class="input-wrapper">
+                    <select class="select-box" id="nomeDropdown"></select>
+                    </div>
+                
+                <input type="number" step="0.1" min="0" max="10" class="input-box" id="votoInput" placeholder="Voto (0-10)" />
+                
+                <button class="button-style gradient-btn" id="addNewVote">VOTA</button>
+            </div>
+            
+            <hr class="separator">
+
+            <h3 class="section-title">La tua classifica</h3>
+            <button class="button-style refresh-btn" id="refreshStanding">AGGIORNA</button>
+            
+            <div class="standings-wrapper glass-card">
+                <table id="mainTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Pos</th>
+                            <th style="width: 65%">Cantante</th>
+                            <th style="width: 20%">Voto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
