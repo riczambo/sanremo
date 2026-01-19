@@ -44,8 +44,7 @@ body {
     margin-top: 30px;
     margin-bottom: 10px;
     text-align: center;
-    /* Effetto testo luminoso */
-    text-shadow: 0 0 20px rgba(255, 0, 204, 0.4);
+    text-shadow: 0 0 24px rgba(255, 0, 204, 0.5);
 }
 
 /* Contenitore App Principale */
