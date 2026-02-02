@@ -334,6 +334,63 @@ tbody tr:nth-child(1) td { color: var(--gold); font-weight: 800; font-size: 1.1r
 tbody tr:nth-child(2) td { color: #e0e0e0; font-weight: 700; }
 tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
 
+/* --- COMPARAZIONE CLASSIFICHE --- */
+
+/* Wrapper per l'input di comparazione (appare sotto il titolo) */
+.compare-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.small-input {
+    height: 40px; /* Più basso degli input normali */
+    font-size: 0.9rem;
+}
+
+/* Stile bottone quando è in modalità "Chiudi" (Rosso) */
+.icon-btn.active-close {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+}
+
+/* Modifiche alla tabella per la modalità VS */
+.vs-table th, .vs-table td {
+    padding: 10px 5px; /* Meno padding laterale per far stare tutto */
+    font-size: 0.85rem;
+}
+
+/* Colonna Sinistra (Io) - Allineata a destra verso il centro */
+.vs-col-left {
+    text-align: right;
+    padding-right: 15px;
+    color: #00ffcc; /* Colore mio */
+    font-weight: 600;
+}
+
+/* Colonna Centro (Posizione) - Allineata al centro */
+.vs-col-center {
+    text-align: center;
+    font-weight: 800;
+    color: var(--gold);
+    border-left: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Colonna Destra (Lui) - Allineata a sinistra verso il centro */
+.vs-col-right {
+    text-align: left;
+    padding-left: 15px;
+    color: #ff00cc; /* Colore avversario */
+    font-weight: 600;
+}
+
+/* Nascondiamo i voti in modalità VS per pulizia */
+.vs-hidden {
+    display: none;
+}
+
 /* =========================================
    8. NOTIFICHE
    ========================================= */

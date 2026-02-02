@@ -22,110 +22,89 @@ const displayUser = document.getElementById('displayUser');
 const nomeDropdown = document.getElementById('nomeDropdown');
 const votoInput = document.getElementById('votoInput');
 const addNewVoteBtn = document.getElementById('addNewVote');
-const refreshStandingBtn = document.getElementById('refreshStanding');
-const tableBody = document.getElementById('mainTable').getElementsByTagName('tbody')[0];
+// Compare Section (Nuovi Elementi)
+const compareBtn = document.getElementById('compareBtn');
+const compareInputArea = document.getElementById('compare-input-area');
+const compareUserParams = document.getElementById('compareUserParams');
+const confirmCompareBtn = document.getElementById('confirmCompareBtn');
+const rankingTitle = document.getElementById('rankingTitle');
+const mainTable = document.getElementById('mainTable');
+const tableHead = mainTable.querySelector('thead tr');
+const tableBody = mainTable.querySelector('tbody');
+
+// Icone SVG
+const iconUsers = compareBtn.querySelector('.icon-users');
+const iconClose = compareBtn.querySelector('.icon-close');
 
 let currentUser = null;
+let isComparing = false;
+let comparisonUser = null;
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     loadCantanti();
-    // Auto-login se c'è memoria
     const savedUser = localStorage.getItem('sanremoUser');
     if(savedUser){
-        // Opzionale: potremmo riverificare la password qui, ma per semplicità ci fidiamo del localStorage
         enterApp(savedUser);
     }
 });
 
-// --- GESTIONE UTENTI (LOGIN & REGISTRAZIONE) ---
-
-// 1. REGISTRAZIONE
+// --- GESTIONE UTENTI ---
 regBtn.addEventListener('click', () => {
     const username = regUserIn.value.trim();
     const password = regPassIn.value.trim();
 
-    if(username === "" || password === "") {
-        showToast("Inserisci nome e password per registrarti.");
-        return;
-    }
+    if(username === "" || password === "") return showToast("Dati mancanti", "error");
 
-    // Controlliamo se esiste già
     const dbRef = ref(db);
     get(child(dbRef, `Users/${username}`)).then((snapshot) => {
         if (snapshot.exists()) {
-            showToast("Questo nome utente è già preso! Scegline un altro.");
+            showToast("Nome utente già preso!", "error");
         } else {
-            // Creiamo l'utente
             const updates = {};
             updates[`Users/${username}`] = password;
-            
             update(dbRef, updates).then(() => {
-                showToast("Utente creato con successo! Ora puoi accedere.");
-                regUserIn.value = "";
-                regPassIn.value = "";
-                // Opzionale: autologin immediato
-                // enterApp(username);
-            }).catch((err) => {
-                showToast("Errore creazione utente");
-                console.error(err);
+                showToast("Utente creato! Accedi.", "success");
+                regUserIn.value = ""; regPassIn.value = "";
             });
         }
     });
 });
 
-// 2. LOGIN
 loginBtn.addEventListener('click', () => {
     const username = loginUserIn.value.trim();
     const password = loginPassIn.value.trim();
 
-    if(username === "" || password === "") {
-        showToast("Inserisci i dati.");
-        return;
-    }
+    if(username === "" || password === "") return showToast("Inserisci dati", "error");
 
     const dbRef = ref(db);
     get(child(dbRef, `Users/${username}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            const savedPassword = snapshot.val();
-            if (savedPassword === password) {
-                enterApp(username);
-            } else {
-                showToast("Password errata!");
-            }
+        if (snapshot.exists() && snapshot.val() === password) {
+            enterApp(username);
         } else {
-            showToast("Utente non trovato. Registrati qui sotto!");
+            showToast("Credenziali errate", "error");
         }
-    }).catch((err) => {
-        console.error(err);
-        showToast("Errore di connessione.");
     });
 });
 
-// 3. LOGOUT
 logoutBtn.addEventListener('click', () => {
     currentUser = null;
+    isComparing = false;
     localStorage.removeItem('sanremoUser');
     loginContainer.style.display = 'block';
     appContainer.style.display = 'none';
-    
-    // Pulisci i campi
-    loginUserIn.value = "";
-    loginPassIn.value = "";
+    loginUserIn.value = ""; loginPassIn.value = "";
+    resetCompareUI();
 });
 
 function enterApp(username) {
     currentUser = username;
     localStorage.setItem('sanremoUser', username);
     displayUser.textContent = currentUser;
-    
     loginContainer.style.display = 'none';
     appContainer.style.display = 'block';
-    
     generateStandings();
 }
-
-// --- LOGICA APP (Identica a prima) ---
 
 function loadCantanti() {
     fetch('concorrenti.csv')
@@ -143,40 +122,122 @@ function loadCantanti() {
     });
 }
 
+// --- LOGICA VOTO ---
 function sendVote() {
     const artista = nomeDropdown.value;
-    const votoString = votoInput.value.trim(); // Prendiamo la stringa grezza
-    const votoNum = parseFloat(votoString); // La convertiamo in numero
+    const votoString = votoInput.value.trim();
+    const votoNum = parseFloat(votoString);
 
-    if (!currentUser) return showToast("Errore: ricarica la pagina e fai login");
-    if (artista === "" || votoString === "") return showToast("Inserisci il voto");
-
-    if (votoNum < 0 || votoNum > 10) {
-        showToast("Il voto deve essere compreso tra 0 e 10!");
-        return;
-    }
+    if (!currentUser) return showToast("Errore login", "error");
+    if (artista === "" || votoString === "") return showToast("Inserisci voto", "error");
+    if (isNaN(votoNum) || votoNum < 0 || votoNum > 10) return showToast("Voto 0-10", "error");
 
     const updates = {};
-    updates[`Sanremo2026/${artista}/${currentUser}`] = votoString;
+    updates[`Sanremo2026/${artista}/${currentUser}`] = votoNum;
 
     update(ref(db), updates).then(() => {
-        showToast(`Voto salvato!`);
-        votoInput.value = ''; 
-        generateStandings(); 
+        showToast(`Voto salvato!`, "success");
+        votoInput.value = '';
+        if(isComparing) {
+            generateComparisonStanding();
+        } else {
+            generateStandings();
+        }
     }).catch((error) => {
         console.error(error);
-        showToast("Errore nel salvataggio");
+        showToast("Errore salvataggio", "error");
     });
 }
-
 addNewVoteBtn.addEventListener('click', sendVote);
 
-function generateStandings() {
+// --- NUOVA LOGICA: COMPARAZIONE ---
+
+// Click sul tasto icona (Utenti / X)
+compareBtn.addEventListener('click', () => {
+    if (isComparing) {
+        // Se sto già confrontando, chiudo tutto e torno alla normale
+        resetCompareUI();
+        generateStandings();
+    } else {
+        // Se sono normale, apro l'input per cercare amico
+        if (compareInputArea.style.display === 'none') {
+            compareInputArea.style.display = 'flex';
+            compareUserParams.focus();
+        } else {
+            compareInputArea.style.display = 'none';
+        }
+    }
+});
+
+// Click su "VS"
+confirmCompareBtn.addEventListener('click', () => {
+    const otherUser = compareUserParams.value.trim();
+    if (otherUser === "") return showToast("Scrivi un nome", "error");
+    if (otherUser === currentUser) return showToast("Non puoi sfidare te stesso!", "error");
+
+    // Controlliamo se l'utente esiste
     const dbRef = ref(db);
+    get(child(dbRef, `Users/${otherUser}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            // Utente esiste, avvia confronto
+            startComparison(otherUser);
+        } else {
+            showToast("Utente non trovato", "error");
+        }
+    });
+});
+
+function startComparison(otherUser) {
+    isComparing = true;
+    comparisonUser = otherUser;
     
+    // UI Updates
+    compareInputArea.style.display = 'none'; // Nascondi input
+    compareBtn.classList.add('active-close'); // Bottone diventa rosso
+    iconUsers.style.display = 'none';
+    iconClose.style.display = 'block';
+    rankingTitle.textContent = `${currentUser} VS ${otherUser}`;
+    
+    // Cambia intestazione tabella
+    tableHead.innerHTML = `
+        <th style="width: 40%; text-align: right;">${currentUser}</th>
+        <th style="width: 20%; text-align: center;">POS</th>
+        <th style="width: 40%; text-align: left;">${otherUser}</th>
+    `;
+    mainTable.classList.add('vs-table'); // Aggiungi classe CSS specifica
+
+    generateComparisonStanding();
+}
+
+function resetCompareUI() {
+    isComparing = false;
+    comparisonUser = null;
+    
+    compareInputArea.style.display = 'none';
+    compareUserParams.value = "";
+    compareBtn.classList.remove('active-close');
+    iconUsers.style.display = 'block';
+    iconClose.style.display = 'none';
+    rankingTitle.textContent = "La tua classifica";
+    
+    // Ripristina intestazione normale
+    tableHead.innerHTML = `
+        <th style="width: 15%">Pos</th>
+        <th style="width: 65%">Cantante</th>
+        <th style="width: 20%">Voto</th>
+    `;
+    mainTable.classList.remove('vs-table');
+}
+
+// --- GENERATORI CLASSIFICHE ---
+
+// 1. Classifica Singola (Normale)
+function generateStandings() {
+    if(isComparing) return; // Sicurezza
+
+    const dbRef = ref(db);
     get(child(dbRef, 'Sanremo2026')).then((snapshot) => {
         tableBody.innerHTML = ''; 
-
         if (snapshot.exists()) {
             const data = snapshot.val();
             let ranking = [];
@@ -205,42 +266,76 @@ function generateStandings() {
                 const cellVote = row.insertCell(2);
                 cellVote.textContent = item.voto;
             });
-
-            if (ranking.length === 0) {
-                 const row = tableBody.insertRow();
-                 const cell = row.insertCell(0);
-                 cell.colSpan = 3;
-                 cell.textContent = "Non hai ancora votato nessuno!";
-            }
+            
+            // Colora il podio (CSS gestisce il resto)
         }
-    }).catch((error) => {
-        console.error(error);
     });
 }
 
-// --- FUNZIONE NOTIFICHE ---
+// 2. Classifica Doppia (VS Mode)
+function generateComparisonStanding() {
+    const dbRef = ref(db);
+    get(child(dbRef, 'Sanremo2026')).then((snapshot) => {
+        tableBody.innerHTML = '';
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            
+            let myRank = [];
+            let theirRank = [];
+
+            // Estrapola le due classifiche separate
+            Object.keys(data).forEach(artista => {
+                const voti = data[artista];
+                if(voti) {
+                    if (voti[currentUser]) {
+                        myRank.push({ artista: artista, voto: parseFloat(voti[currentUser]) });
+                    }
+                    if (voti[comparisonUser]) {
+                        theirRank.push({ artista: artista, voto: parseFloat(voti[comparisonUser]) });
+                    }
+                }
+            });
+
+            // Ordina entrambe
+            myRank.sort((a, b) => b.voto - a.voto);
+            theirRank.sort((a, b) => b.voto - a.voto);
+
+            // Determina la lunghezza massima da visualizzare
+            const maxLength = Math.max(myRank.length, theirRank.length);
+
+            for (let i = 0; i < maxLength; i++) {
+                const row = tableBody.insertRow();
+
+                // Colonna MIO (Sinistra)
+                const cellMy = row.insertCell(0);
+                cellMy.className = "vs-col-left";
+                cellMy.textContent = myRank[i] ? myRank[i].artista : "-";
+
+                // Colonna POS (Centro)
+                const cellPos = row.insertCell(1);
+                cellPos.className = "vs-col-center";
+                cellPos.textContent = i + 1;
+
+                // Colonna SUO (Destra)
+                const cellTheir = row.insertCell(2);
+                cellTheir.className = "vs-col-right";
+                cellTheir.textContent = theirRank[i] ? theirRank[i].artista : "-";
+            }
+        }
+    });
+}
+
+
+// --- TOAST ---
 function showToast(message, type = 'success') {
     const container = document.getElementById('notification-area');
     container.innerHTML = ''; 
-
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
-    
     container.appendChild(toast);
-    
     setTimeout(() => {
         toast.classList.add('hiding');
-        
-        toast.addEventListener('animationend', () => {
-            toast.remove();
-        });
-        
-        setTimeout(() => {
-            if(toast.parentElement) toast.remove();
-        }, 600);
-        
+        toast.addEventListener('animationend', () => toast.remove());
     }, 3000);
 }
-
-refreshStandingBtn.addEventListener('click', generateStandings);
