@@ -173,7 +173,7 @@ compareBtn.addEventListener('click', () => {
 confirmCompareBtn.addEventListener('click', () => {
     const otherUser = compareUserParams.value.trim();
     if (otherUser === "") return showToast("Scrivi un nome", "error");
-    if (otherUser === currentUser) return showToast("I saggi dicono che possiamo sfidare noi stessi... ma non qui!", "error");
+    if (otherUser === currentUser) return showToast("I saggi dicono di sfidare noi stessi... ma non qui!", "error");
 
     // Controlliamo se l'utente esiste
     const dbRef = ref(db);
