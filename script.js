@@ -173,7 +173,7 @@ compareBtn.addEventListener('click', () => {
 confirmCompareBtn.addEventListener('click', () => {
     const otherUser = compareUserParams.value.trim();
     if (otherUser === "") return showToast("Scrivi un nome", "error");
-    if (otherUser === currentUser) return showToast("Non puoi sfidare te stesso!", "error");
+    if (otherUser === currentUser) return showToast("I saggi dicono che possiamo sfidare noi stessi... ma non qui!", "error");
 
     // Controlliamo se l'utente esiste
     const dbRef = ref(db);
@@ -200,9 +200,9 @@ function startComparison(otherUser) {
     
     // Cambia intestazione tabella
     tableHead.innerHTML = `
-        <th style="width: 40%; text-align: right;">${currentUser}</th>
+        <th style="width: 40%; text-align: center;">${currentUser}</th>
         <th style="width: 20%; text-align: center;">POS</th>
-        <th style="width: 40%; text-align: left;">${otherUser}</th>
+        <th style="width: 40%; text-align: center;">${otherUser}</th>
     `;
     mainTable.classList.add('vs-table'); // Aggiungi classe CSS specifica
 
