@@ -193,7 +193,7 @@ body {
 .user-controls {
     display: flex;
     flex-direction: column;
-    align-items: right;
+    align-items: flex-end;
     gap: 10px;
 }
 
@@ -397,6 +397,7 @@ option {
     font-size: 0.8rem;
     cursor: pointer;
     transition: 0.3s;
+    width: 58px;
 }
 
 .logout-btn:hover {
