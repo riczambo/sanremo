@@ -78,9 +78,8 @@ loginBtn.addEventListener('click', () => {
     if(username === "" || password === "") return showToast("Inserisci dati", "error");
 
     const dbRef = ref(db);
-    get(child(dbRef, `Users/${username}`)).then((snapshot) => {useDebugValue
+    get(child(dbRef, `Users/${username}`)).then((snapshot) => {
         if (snapshot.exists() && snapshot.val() === password) {
-
             enterApp(username);
         } else {
             showToast("Credenziali errate", "error");
