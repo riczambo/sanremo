@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getDatabase, ref, child, get, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 import { firebaseConfig } from './config.js';
+import { useDebugValue } from "react";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
@@ -78,8 +79,9 @@ loginBtn.addEventListener('click', () => {
     if(username === "" || password === "") return showToast("Inserisci dati", "error");
 
     const dbRef = ref(db);
-    get(child(dbRef, `Users/${username}`)).then((snapshot) => {
+    get(child(dbRef, `Users/${username}`)).then((snapshot) => {useDebugValue
         if (snapshot.exists() && snapshot.val() === password) {
+
             enterApp(username);
         } else {
             showToast("Credenziali errate", "error");
@@ -119,6 +121,65 @@ function loadCantanti() {
             el.textContent = option;
             nomeDropdown.appendChild(el);
         });
+        setupCustomDropdown();
+    });
+}
+
+function setupCustomDropdown() {
+    const wrapper = document.querySelector('.custom-select-wrapper');
+    const select = document.getElementById('nomeDropdown');
+    
+    if (!wrapper) return;
+
+    const existingTrigger = wrapper.querySelector('.custom-select-trigger');
+    const existingOptions = wrapper.querySelector('.custom-options');
+    if (existingTrigger) existingTrigger.remove();
+    if (existingOptions) existingOptions.remove();
+
+    const trigger = document.createElement('div');
+    trigger.className = 'custom-select-trigger';
+    
+    const initialText = select.options.length > 0 ? select.options[0].text : "Seleziona cantante";
+    trigger.innerHTML = `<span>${initialText}</span> <span class="arrow"></span>`;
+    
+    const optionsList = document.createElement('div');
+    optionsList.className = 'custom-options';
+
+    for (const option of select.options) {
+        const div = document.createElement('div');
+        div.className = 'custom-option';
+        div.textContent = option.text;
+        
+        if (option.selected) {
+            div.classList.add('selected');
+        }
+        
+        div.addEventListener('click', function() {
+            select.value = option.value;
+            
+            trigger.querySelector('span').textContent = option.text;
+            
+            optionsList.querySelectorAll('.custom-option').forEach(el => el.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            wrapper.classList.remove('open');
+        });
+        
+        optionsList.appendChild(div);
+    }
+
+    wrapper.appendChild(trigger);
+    wrapper.appendChild(optionsList);
+
+    trigger.addEventListener('click', function(e) {
+        e.stopPropagation(); 
+        wrapper.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!wrapper.contains(e.target)) {
+            wrapper.classList.remove('open');
+        }
     });
 }
 
