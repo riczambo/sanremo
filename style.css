@@ -273,26 +273,27 @@ select#nomeDropdown {
 .custom-options {
     position: absolute;
     display: block;
-    top: 110%; /* Poco sotto l'input */
+    top: 110%;
     left: 0;
     right: 0;
     
-    /* Stile Vetro uguale alle card */
-    background: rgba(20, 20, 35, 0.95);
+    background: rgba(20, 20, 35, 0.98); /* Leggermente meno trasparente per leggibilità */
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    z-index: 1000; /* Sta sopra a tutto */
+    z-index: 9999; /* Z-index altissimo per stare sopra a tutto */
     
-    /* Animazione apertura */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transform: translateY(-10px);
     transition: 0.3s ease;
     
-    max-height: 250px; /* Altezza massima */
-    overflow-y: auto;  /* Se sono tanti, scrolla */
+    max-height: 220px;
+    overflow-y: auto;
+    
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Stato Aperto */
@@ -305,17 +306,40 @@ select#nomeDropdown {
 
 /* Le singole opzioni */
 .custom-option {
-    padding: 12px 15px;
+    padding: 15px 15px;
     cursor: pointer;
     transition: 0.2s;
     border-bottom: 1px solid rgba(255,255,255,0.05);
     color: #ddd;
+    font-size: 1rem;
 }
 
 .custom-option:hover, .custom-option.selected {
-    background: rgba(255, 0, 204, 0.2); /* Colore fucsia al passaggio */
+    background: rgba(255, 0, 204, 0.2);
     color: white;
     font-weight: 600;
+}
+
+.custom-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Il "binario" su cui scorre */
+.custom-options::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05); /* Quasi invisibile */
+    margin: 5px 0;
+    border-radius: 10px;
+}
+
+/* La "maniglia" che trascini */
+.custom-options::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Bianco trasparente discreto */
+    border-radius: 10px; /* Arrotondata */
+    transition: background 0.3s;
+}
+
+.custom-options::-webkit-scrollbar-thumb:hover {
+    background: #ff00cc;
 }
 
 option {
