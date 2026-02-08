@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanremo 2026</title>
+    <title>SanremoDalDivano</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="notification-area"></div>
-    <img src="logoSanremoApp-nobg.png" alt="Sanremo 2026" class="main-title" style="height: 120px;">
     
-    <div id="login-container" class="glass-card centered-card">   
-        <h2 class="login-title">Accedi</h2>
+    <div id="login-container" class="glass-card">   
+        
+        <div class="header-row">
+            <div class="logo-wrapper">
+                <img src="logoSanremoApp-nobg.png" alt="Logo" class="logo" style="height: 120px">
+                <!-- <span class="brand-signature">by Zambo</span> -->
+            </div>
+            <h2 class="header-right">Accedi per giocare</h2>
+        </div>
+
         <div class="form-group">
             <input type="text" id="loginUser" class="input-box" placeholder="Nome Utente" autocapitalize="off" spellcheck="false">
             <input type="password" id="loginPass" class="input-box" placeholder="Password">
@@ -35,10 +42,17 @@
     <div id="app-container">
         
         <div class="header-row">
-            <div class="greeting">
-                Ciao <span id="displayUser" class="active-user"></span>!
+            <div class="logo-wrapper">
+                <img src="logoSanremoApp-nobg.png" alt="Logo" class="logo" style="height: 120px">
+                <!-- <span class="brand-signature">by RZ</span> -->
             </div>
-            <button id="logoutBtn" class="logout-btn">Esci</button>
+            
+            <div class="user-controls">
+                <div class="header-right">
+                    Ciao <span id="displayUser" class="active-user"></span>!
+                </div>
+                <button id="logoutBtn" class="logout-btn">Esci</button>
+            </div>
         </div>
 
         <div class="main-content">
@@ -90,6 +104,10 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+        <p>Crietid bai rz</p>
+    </footer>
 
     <script type="module" src="script.js"></script>
     <script>

@@ -78,7 +78,29 @@ body {
     text-align: center;
 }
 
-/* Header Principale (Nome + Logout) */
+.logo {
+    height: 70px;
+    width: auto;
+}
+.logo-wrapper {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+    margin-left: -30px;
+}
+/* .brand-signature {
+    position: absolute;
+    bottom: 14px;
+    right: 28px;
+    
+    font-size: 0.25rem;
+    font-weight: 550;
+    color: rgba(255, 255, 255, 0.6);
+    
+    pointer-events: none;
+    white-space: nowrap;
+} */
+
 .header-row {
     display: flex;
     justify-content: space-between;
@@ -139,7 +161,7 @@ body {
 }
 
 .active-user {
-    color: #00ffcc;
+    color: #9690f0;
     font-weight: 800;
 }
 
@@ -156,6 +178,23 @@ body {
 /* Aggiunge spazio extra sopra i bottoni dentro il form */
 .form-group button {
     margin-top: 10px; 
+}
+
+.header-right {
+    text-align: right;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--text-color);
+}
+
+.user-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    gap: 10px;
 }
 
 /* Stile Base Input e Select */
@@ -222,18 +261,15 @@ option {
     transform: scale(0.98);
 }
 
-/* Gradiente (Viola/Fucsia) */
 .gradient-btn {
     background: var(--primary-gradient);
     box-shadow: 0 4px 15px rgba(255, 0, 204, 0.3);
 }
 
-/* Secondario (Grigio scuro) */
 .secondary-btn {
     background: linear-gradient(45deg, #555, #777); /* Leggermente più chiaro per leggibilità */
 }
 
-/* Bottone Piccolo (Header) */
 .small-btn {
     width: auto;
     padding: 0 20px;
@@ -244,7 +280,6 @@ option {
     box-shadow: 0 4px 15px rgba(255, 0, 204, 0.2);
 }
 
-/* Bottone Logout */
 .logout-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.3);
@@ -261,7 +296,6 @@ option {
     color: white;
 }
 
-/* Bottone Icona */
 .icon-btn {
     width: 40px;      
     height: 40px;     
@@ -343,58 +377,52 @@ tbody tr:nth-child(2) td { color: #e0e0e0; font-weight: 700; }
 tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
 
 /* --- COMPARAZIONE CLASSIFICHE --- */
-
-/* Wrapper per l'input di comparazione (appare sotto il titolo) */
+/* Wrapper per l'input di comparazione*/
 .compare-wrapper {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
     animation: slideIn 0.3s ease-out;
 }
-
 .small-input {
-    height: 40px; /* Più basso degli input normali */
+    height: 40px;
     font-size: 0.9rem;
 }
-
-/* Stile bottone quando è in modalità "Chiudi" (Rosso) */
+/* Stile bottone quando è in modalità "Chiudi"*/
 .icon-btn.active-close {
     background: linear-gradient(45deg, #ff416c, #ff4b2b);
     box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
 }
-
 /* Modifiche alla tabella per la modalità VS */
 .vs-table th, .vs-table td {
-    padding: 10px 5px; /* Meno padding laterale per far stare tutto */
+    padding: 10px 5px;
     font-size: 0.85rem;
 }
-
-/* Colonna Sinistra (Io) - Allineata a destra verso il centro */
+/* Colonna Sinistra*/
 .vs-col-left {
     text-align: right;
     padding-right: 15px;
     font-weight: 600;
 }
-
-/* Colonna Centro (Posizione) - Allineata al centro */
+/* Colonna Centro*/
 .vs-col-center {
     text-align: center;
     font-weight: 800;
     border-left: 1px solid rgba(255,255,255,0.1);
     border-right: 1px solid rgba(255,255,255,0.1);
 }
-
-/* Colonna Destra (Lui) - Allineata a sinistra verso il centro */
+/* Colonna Destra */
 .vs-col-right {
     text-align: left;
     padding-left: 15px;
     font-weight: 600;
 }
-
 /* Nascondiamo i voti in modalità VS per pulizia */
 .vs-hidden {
     display: none;
 }
+
+
 
 /* =========================================
    8. NOTIFICHE
@@ -409,7 +437,6 @@ tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
     max-width: 400px;
     pointer-events: none;
 }
-
 .toast {
     background: #1e1b36;
     color: white;
@@ -437,7 +464,20 @@ tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
     to { transform: translateY(-20px); opacity: 0; }
 }
 
-/* MOBILE RESPONSIVE */
-@media (max-width: 600px) {
-    .main-title { font-size: 1.8rem; }
+/* =========================================
+   9. FOOTER
+   ========================================= */
+.footer {
+    margin-top: 60px;
+    padding: 20px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    opacity: 0.6;
+}
+
+.footer p {
+    margin: 0;
+    font-weight: 400;
 }
