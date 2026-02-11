@@ -36,9 +36,13 @@ const tableBody = mainTable.querySelector('tbody');
 const iconUsers = compareBtn.querySelector('.icon-users');
 const iconClose = compareBtn.querySelector('.icon-close');
 
+// --- CONFIGURAZIONE ---
+const VOTING_OPEN = true;
+
 let currentUser = null;
 let isComparing = false;
 let comparisonUser = null;
+
 
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -183,6 +187,10 @@ function setupCustomDropdown() {
 
 // --- LOGICA VOTO ---
 function sendVote() {
+    if (!VOTING_OPEN) {
+        return showToast("⛔ Le votazioni sono chiuse!", "error");
+    }
+
     const artista = nomeDropdown.value;
     const votoString = votoInput.value.trim();
     const votoNum = parseFloat(votoString);
