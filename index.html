@@ -51,14 +51,16 @@
                     Ciao <span id="displayUser" class="active-user"></span>!
                 </div>
                 <div class="action-buttons">
-                    <button id="rulesBtn" class="rules-btn">ℹ️</button>
                     <button id="logoutBtn" class="logout-btn">Esci</button>
-                </div>
+                </div>                
             </div>
         </div>
 
         <div class="main-content">
-            <h3 class="section-title">Aggiungi/modifica il tuo voto</h3>
+            <div class="section-header-row">
+                <h3 class="section-title" style="margin: 0;">Aggiungi/modifica il tuo voto</h3>
+                <button id="rulesBtn" class="rules-btn">Info</button>
+            </div>
             
             <div class="glass-card vote-card">
                 <div class="form-group">
@@ -86,7 +88,7 @@
             </div>
 
             <div id="compare-input-area" class="compare-wrapper" style="display: none;">
-                <input type="text" id="compareUserParams" class="input-box small-input" placeholder="Chi vuoi sbirciare?" autocapitalize="off" spellcheck="false">
+                <input type="text" id="compareUserParams" class="input-box small-input" placeholder="Chi vuoi spiare? 😈" autocapitalize="off" spellcheck="false">
                 <button id="confirmCompareBtn" class="button-style small-btn gradient-btn">VS</button>
             </div>
             
@@ -118,12 +120,12 @@
             </div>
             <div class="modal-body">
                 <h3 style="text-align: center; padding-top: 0.3rem; ">Il Profeta in ciabatte</h3>
-                <p>Lo scopo del gioco è far combaciare la tua classifica personale con la classifica ufficiale del Festival.</p>
+                <p>Lo scopo del gioco è far combaciare la tua classifica personale con la classifica finale del Festival!<br>Non conta il voto in sè ma la posizione che assume un cantante rispetto ad un altro.</p>
                 
                 <h4 style="padding-top: 0.2rem; padding-bottom: 0.5rem;">Come si gioca</h4>
                 <ul>
-                    <li><strong>Vota:</strong> assegna voti da 0 a 10. Puoi modificarli finché vuoi.</li>
-                    <li><strong>Il Limite:</strong> le votazioni si chiudono alla mezzanotte tra sabato e domenica!</li>
+                    <li><strong>Vota:</strong> assegna voti da 0 a 10, anche con decimali. Puoi modificarli fino alla mezzanotte tra sabato e domenica (serata finale)</li>
+                    <li><strong>Sbircia:</strong> puoi confrontare la tua classifica con quella di un'altra persona, se ne conosci il nickname 👀</li>
                 </ul>
 
                 <h4 style="padding-bottom: 0.7rem;">Sistema a Punti, per ogni cantante</h4>
