@@ -88,18 +88,6 @@ body {
     line-height: 0;
     margin-left: -30px;
 }
-/* .brand-signature {
-    position: absolute;
-    bottom: 14px;
-    right: 28px;
-    
-    font-size: 0.25rem;
-    font-weight: 550;
-    color: rgba(255, 255, 255, 0.6);
-    
-    pointer-events: none;
-    white-space: nowrap;
-} */
 
 .header-row {
     display: flex;
@@ -165,6 +153,13 @@ body {
     font-weight: 800;
 }
 
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
 /* =========================================
    4. FORM E SPAZIATURA
    ========================================= */
@@ -185,7 +180,6 @@ body {
     font-size: 1.2rem;
     line-height: 1.2;
     margin: 0;
-    text-transform: uppercase;
     font-weight: 800;
     color: var(--text-color);
 }
@@ -530,6 +524,95 @@ tbody tr:nth-child(3) td { color: #cd7f32; font-weight: 700; }
 .vs-hidden {
     display: none;
 }
+
+
+/* --- BOTTONE REGOLAMENTO --- */
+.rules-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #ccc;
+    padding: 4px 6px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 58px;
+}
+
+.rules-btn:hover {
+    background: rgba(255, 0, 204, 0.3);
+    border-color: #ff00cc;
+}
+
+/* --- POPUP (MODALE) REGOLAMENTO --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Animazione di default nascosta */
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 450px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    transform: translateY(-20px);
+    transition: 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #ff00cc;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.modal-body h3 { margin-top: 0; color: #ddd; }
+.modal-body h4 { margin: 15px 0 5px; color: #fff; }
+.modal-body ul { padding-left: 20px; margin-top: 5px; color: #ccc;}
+.modal-body li { margin-bottom: 8px; font-size: 0.95rem; line-height: 1.4; }
+.prize-text { font-weight: bold; color: #ff00cc; text-align: center; margin-top: 20px; font-size: 1.1rem; }
 
 
 

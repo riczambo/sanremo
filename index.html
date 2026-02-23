@@ -44,14 +44,16 @@
         <div class="header-row">
             <div class="logo-wrapper">
                 <img src="logoSanremoApp-nobg.png" alt="Logo" class="logo" style="height: 120px">
-                <!-- <span class="brand-signature">by RZ</span> -->
             </div>
             
             <div class="user-controls">
                 <div class="header-right">
                     Ciao <span id="displayUser" class="active-user"></span>!
                 </div>
-                <button id="logoutBtn" class="logout-btn">Esci</button>
+                <div class="action-buttons">
+                    <button id="rulesBtn" class="rules-btn">ℹ️</button>
+                    <button id="logoutBtn" class="logout-btn">Esci</button>
+                </div>
             </div>
         </div>
 
@@ -105,8 +107,41 @@
     </div>
 
     <footer class="footer">
-        <p>Crietid bai rz</p>
+        <p>Created by rz</p>
     </footer>
+
+    <div id="rulesModal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>📜 Regolamento</h2>
+                <button id="closeRulesBtn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3 style="text-align: center; padding-top: 0.3rem; ">Il Profeta in ciabatte</h3>
+                <p>Lo scopo del gioco è far combaciare la tua classifica personale con la classifica ufficiale del Festival.</p>
+                
+                <h4 style="padding-top: 0.2rem; padding-bottom: 0.5rem;">Come si gioca</h4>
+                <ul>
+                    <li><strong>Vota:</strong> assegna voti da 0 a 10. Puoi modificarli finché vuoi.</li>
+                    <li><strong>Il Limite:</strong> le votazioni si chiudono alla mezzanotte tra sabato e domenica!</li>
+                </ul>
+
+                <h4 style="padding-bottom: 0.7rem;">Sistema a Punti, per ogni cantante</h4>
+                <ul>
+                    <li>🎯 <strong>Posizione esatta:</strong> +10 Punti</li>
+                    <li>🤏 <strong>Sbagliata di 1 posto:</strong> +5 Punti</li>
+                    <li>🤷‍♂️ <strong>Sbagliata di 2 posti:</strong> +2 Punti</li>
+                </ul>
+
+                <h4 style="padding-bottom: 0.7rem;">🌟 Bonus Speciali</h4>
+                <ul>
+                    <li>Indovina l'esatta <strong>Top 3</strong>: +50 Punti</li>
+                    <li>Indovina l'<strong>ultimo</strong> classificato: +30 Punti.</li>
+                </ul>
+                <p class="prize-text">🏆 In palio l'eterna gloria e un premio speciale!</p>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="script.js"></script>
     <script>

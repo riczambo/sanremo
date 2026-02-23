@@ -31,13 +31,20 @@ const rankingTitle = document.getElementById('rankingTitle');
 const mainTable = document.getElementById('mainTable');
 const tableHead = mainTable.querySelector('thead tr');
 const tableBody = mainTable.querySelector('tbody');
+const rulesBtn = document.getElementById('rulesBtn');
+const rulesModal = document.getElementById('rulesModal');
+const closeRulesBtn = document.getElementById('closeRulesBtn');
 
 // Icone SVG
 const iconUsers = compareBtn.querySelector('.icon-users');
 const iconClose = compareBtn.querySelector('.icon-close');
 
 // --- CONFIGURAZIONE ---
-const VOTING_OPEN = true;
+function isVotingOpen() {
+    const deadline = new Date(2026, 2, 1, 0, 0, 0); 
+    const now = new Date();    
+    return now < deadline;
+}
 
 let currentUser = null;
 let isComparing = false;
@@ -185,9 +192,28 @@ function setupCustomDropdown() {
     });
 }
 
+if (rulesBtn && rulesModal && closeRulesBtn) {
+    // Apri modale
+    rulesBtn.addEventListener('click', () => {
+        rulesModal.classList.add('show');
+    });
+
+    // Chiudi modale dalla X
+    closeRulesBtn.addEventListener('click', () => {
+        rulesModal.classList.remove('show');
+    });
+
+    // Chiudi modale cliccando fuori dal contenuto
+    rulesModal.addEventListener('click', (e) => {
+        if (e.target === rulesModal) {
+            rulesModal.classList.remove('show');
+        }
+    });
+}
+
 // --- LOGICA VOTO ---
 function sendVote() {
-    if (!VOTING_OPEN) {
+    if (!isVotingOpen()) {
         return showToast("⛔ Le votazioni sono chiuse!", "error");
     }
 

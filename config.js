@@ -1,6 +1,6 @@
 // config.js
 export const firebaseConfig = {
-    apiKey: "AIzaSyA4trb1Kag8PqQdlJo9itdC4smdA2rrupU",
+    apiKey: "AIzaSyAaH72ho_JEj7X0OQJ7fvxnU0SlwsyHXcY",
     authDomain: "sanremo2024-19451.firebaseapp.com",
     databaseURL: "https://sanremo2024-19451-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "sanremo2024-19451",
