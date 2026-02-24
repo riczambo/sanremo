@@ -92,8 +92,11 @@
                 </button>
             </div>
 
-            <div id="compare-input-area" class="compare-wrapper" style="display: none;">
-                <input type="text" id="compareUserParams" class="input-box small-input" placeholder="Chi vuoi spiare? 😈" autocapitalize="off" spellcheck="false">
+            <div id="compare-input-area" class="compare-wrapper" style="display: none; align-items: flex-start;">
+                <div class="custom-autocomplete-wrapper">
+                    <input type="text" id="compareUserParams" class="input-box small-input" placeholder="Chi vuoi spiare? 😈" autocapitalize="off" spellcheck="false" autocomplete="off">
+                    <div id="recentUsersDropdown" class="custom-dropdown-list" style="display: none;"></div>
+                </div>
                 <button id="confirmCompareBtn" class="button-style small-btn gradient-btn">VS</button>
             </div>
             
@@ -127,7 +130,7 @@
                 <button id="closeRulesBtn" class="close-modal-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Lo scopo del gioco è far combaciare la tua classifica personale con la classifica finale del Festival!<br>Non conta il voto in sè ma la posizione che assume un cantante rispetto ad un altro.</p>
+                <p>Lo scopo del gioco è far combaciare la tua classifica personale con la classifica finale del Festival!<br>Non conta il voto in sè ma la posizione che assume un cantante rispetto ad un altro.<br>Potete votare anche in pausa pranzo mentre riascoltate una canzone, non è necessario votare tutte le sere, basta dare un voto a tutti entro sabato</p>
                 
                 <h4 style="padding-top: 0.2rem; padding-bottom: 0.5rem;">Come si gioca</h4>
                 <ul>
@@ -140,7 +143,7 @@
                     <li>🎯 <strong>Posizione esatta:</strong> 15 Punti</li>
                     <li>🤏 <strong>Sbagliata di 1 posto:</strong> 10 Punti</li>
                     <li>🤷‍♂️ <strong>Sbagliata di 2 posti:</strong> 5 Punti</li>
-                    <li>🤷‍♂️ <strong>Sbagliata di 3 posti:</strong> 2 Punti</li>
+                    <li>🔭 <strong>Sbagliata di 3 posti:</strong> 2 Punti</li>
                 </ul>
 
                 <h4 style="padding-bottom: 0.7rem;">🌟 Bonus Speciali</h4>

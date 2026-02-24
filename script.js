@@ -40,6 +40,8 @@ const totUsersEl = document.getElementById('totUsers');
 const totVotesEl = document.getElementById('totVotes');
 const voteTitle = document.getElementById('voteTitle');
 const statsText = document.getElementById('statsText');
+const recentUsersDropdown = document.getElementById('recentUsersDropdown');
+const RECENT_USERS_KEY = 'sanremoRecentUsers';
 
 // Icone SVG
 const iconUsers = compareBtn.querySelector('.icon-users');
@@ -361,39 +363,38 @@ addNewVoteBtn.addEventListener('click', sendVote);
 
 // --- NUOVA LOGICA: COMPARAZIONE ---
 
-// Click sul tasto icona (Utenti / X)
 compareBtn.addEventListener('click', () => {
     if (isComparing) {
-        // Se sto già confrontando, chiudo tutto e torno alla normale
         resetCompareUI();
         generateStandings();
     } else {
-        // Se sono normale, apro l'input per cercare amico
         if (compareInputArea.style.display === 'none') {
             compareInputArea.style.display = 'flex';
-            compareUserParams.focus();
         } else {
             compareInputArea.style.display = 'none';
         }
     }
 });
 
-// Click su "VS"
-confirmCompareBtn.addEventListener('click', () => {
-    const otherUser = compareUserParams.value.trim();
+// --- MOTORE DI CONFRONTO ---
+function triggerCompare(otherUser) {
     if (otherUser === "") return showToast("Scrivi un nome", "error");
     if (otherUser === currentUser) return showToast("I saggi dicono di sfidare noi stessi... ma non qui!", "error");
 
-    // Controlliamo se l'utente esiste
     const dbRef = ref(db);
     get(child(dbRef, `Users/${otherUser}`)).then((snapshot) => {
         if (snapshot.exists()) {
-            // Utente esiste, avvia confronto
+            saveRecentUser(otherUser);
             startComparison(otherUser);
         } else {
             showToast("Utente non trovato", "error");
         }
     });
+}
+
+// Click su "VS" (Manuale)
+confirmCompareBtn.addEventListener('click', () => {
+    triggerCompare(compareUserParams.value.trim());
 });
 
 function startComparison(otherUser) {
@@ -534,6 +535,50 @@ function generateComparisonStanding() {
     });
 }
 
+// --- CRONOLOGIA SFIDANTI CUSTOM ---
+function saveRecentUser(username) {
+    let savedUsers = JSON.parse(localStorage.getItem(RECENT_USERS_KEY)) || [];
+    savedUsers = savedUsers.filter(u => u !== username);
+    savedUsers.unshift(username);
+    if (savedUsers.length > 4) savedUsers.pop();
+    localStorage.setItem(RECENT_USERS_KEY, JSON.stringify(savedUsers));
+}
+
+function showRecentUsers() {
+    let savedUsers = JSON.parse(localStorage.getItem(RECENT_USERS_KEY)) || [];
+    
+    if (savedUsers.length === 0) {
+        recentUsersDropdown.style.display = 'none';
+        return;
+    }
+    
+    recentUsersDropdown.innerHTML = '';
+    
+    savedUsers.forEach(user => {
+        const div = document.createElement('div');
+        div.className = 'recent-user-item';
+        div.innerHTML = `<span style="font-size: 1.1em; opacity: 0.6;">🕒</span> ${user}`;
+        
+        div.addEventListener('click', () => {
+            compareUserParams.value = user;
+            recentUsersDropdown.style.display = 'none';
+            triggerCompare(user);
+        });
+        
+        recentUsersDropdown.appendChild(div);
+    });
+    
+    recentUsersDropdown.style.display = 'block';
+}
+
+compareUserParams.addEventListener('focus', showRecentUsers);
+compareUserParams.addEventListener('click', showRecentUsers);
+
+document.addEventListener('click', (e) => {
+    if (!compareUserParams.contains(e.target) && !recentUsersDropdown.contains(e.target)) {
+        recentUsersDropdown.style.display = 'none';
+    }
+});
 
 // --- TOAST ---
 function showToast(message, type = 'success') {
