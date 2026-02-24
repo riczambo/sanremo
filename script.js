@@ -310,6 +310,9 @@ function loadFooterStats() {
             
             totVotesEl.textContent = voteCount;
             totUsersEl.textContent = uniqueUsers.size < 7 ? 7 : uniqueUsers.size;
+        } else {
+            totVotesEl.textContent = 0;
+            totUsersEl.textContent = 7;
         }
     }).catch(error => {
         console.error("Errore nel caricamento statistiche:", error);
