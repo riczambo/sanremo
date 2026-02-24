@@ -39,6 +39,7 @@ const statusBanner = document.getElementById('status-banner');
 const totUsersEl = document.getElementById('totUsers');
 const totVotesEl = document.getElementById('totVotes');
 const voteTitle = document.getElementById('voteTitle');
+const statsText = document.getElementById('statsText');
 
 // Icone SVG
 const iconUsers = compareBtn.querySelector('.icon-users');
@@ -124,6 +125,7 @@ function enterApp(username) {
     displayUser.textContent = currentUser;
     loginContainer.style.display = 'none';
     appContainer.style.display = 'block';
+    if (statsText) statsText.style.display = 'block';
     generateStandings();
     loadFooterStats();
     checkPhases();
@@ -307,7 +309,7 @@ function loadFooterStats() {
             }
             
             totVotesEl.textContent = voteCount;
-            totUsersEl.textContent = uniqueUsers.size;
+            totUsersEl.textContent = uniqueUsers.size < 7 ? 7 : uniqueUsers.size;
         }
     }).catch(error => {
         console.error("Errore nel caricamento statistiche:", error);
@@ -330,18 +332,23 @@ function sendVote() {
 
     const updates = {};
     updates[`Sanremo2026/${artista}/${currentUser}`] = votoNum;
+    addNewVoteBtn.disabled = true;
 
     update(ref(db), updates).then(() => {
         showToast(`Voto salvato!`, "success");
         votoInput.value = '';
+        
         if(isComparing) {
             generateComparisonStanding();
         } else {
             generateStandings();
         }
+        loadFooterStats(); 
     }).catch((error) => {
         console.error(error);
         showToast("Errore salvataggio", "error");
+    }).finally(() => {
+        addNewVoteBtn.disabled = false;
     });
 }
 addNewVoteBtn.addEventListener('click', sendVote);
