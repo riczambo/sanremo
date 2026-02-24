@@ -31,7 +31,7 @@ const rankingTitle = document.getElementById('rankingTitle');
 const mainTable = document.getElementById('mainTable');
 const tableHead = mainTable.querySelector('thead tr');
 const tableBody = mainTable.querySelector('tbody');
-const rulesBtn = document.getElementById('rulesBtn');
+const rulesBtns = document.querySelectorAll('.rules-btn');
 const rulesModal = document.getElementById('rulesModal');
 const closeRulesBtn = document.getElementById('closeRulesBtn');
 const voteCard = document.querySelector('.vote-card');
@@ -206,10 +206,13 @@ function setupCustomDropdown() {
     });
 }
 
-if (rulesBtn && rulesModal && closeRulesBtn) {
+// --- GESTIONE MODALE REGOLAMENTO ---
+if (rulesBtns.length > 0 && rulesModal && closeRulesBtn) {
     // Apri modale
-    rulesBtn.addEventListener('click', () => {
-        rulesModal.classList.add('show');
+    rulesBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            rulesModal.classList.add('show');
+        });
     });
 
     // Chiudi modale dalla X
