@@ -341,6 +341,33 @@ option {
     padding: 10px;
 }
 
+/* --- STILI PER IL BANNER FASI FINALI --- */
+#status-banner h3 {
+    margin-top: 0;
+    color: #ff00cc;
+    font-size: 1.3rem;
+}
+#status-banner p {
+    color: #ddd;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+.score-display {
+    color: var(--gold);
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin: 15px 0;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+.winner-name {
+    color: #00ffcc;
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 10px 0;
+    text-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+}
+
 /* =========================================
    5. BOTTONI
    ========================================= */

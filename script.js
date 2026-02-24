@@ -34,6 +34,11 @@ const tableBody = mainTable.querySelector('tbody');
 const rulesBtn = document.getElementById('rulesBtn');
 const rulesModal = document.getElementById('rulesModal');
 const closeRulesBtn = document.getElementById('closeRulesBtn');
+const voteCard = document.querySelector('.vote-card');
+const statusBanner = document.getElementById('status-banner');
+const totUsersEl = document.getElementById('totUsers');
+const totVotesEl = document.getElementById('totVotes');
+const voteTitle = document.getElementById('voteTitle');
 
 // Icone SVG
 const iconUsers = compareBtn.querySelector('.icon-users');
@@ -45,6 +50,11 @@ function isVotingOpen() {
     const now = new Date();    
     return now < deadline;
 }
+// --- CONFIGURAZIONE ORARI ---
+const DEADLINE_VOTI = new Date(2026, 2, 1, 0, 0, 0);
+const DEADLINE_VINCITORE = new Date(2026, 2, 1, 14, 0, 0);
+/* const DEADLINE_VOTI = new Date(2020, 1, 1, 0, 0, 0);
+const DEADLINE_VINCITORE = new Date(2030, 1, 1, 14, 0, 0); */
 
 let currentUser = null;
 let isComparing = false;
@@ -115,6 +125,8 @@ function enterApp(username) {
     loginContainer.style.display = 'none';
     appContainer.style.display = 'block';
     generateStandings();
+    loadFooterStats();
+    checkPhases();
 }
 
 function loadCantanti() {
@@ -208,6 +220,97 @@ if (rulesBtn && rulesModal && closeRulesBtn) {
         if (e.target === rulesModal) {
             rulesModal.classList.remove('show');
         }
+    });
+}
+
+function checkPhases() {
+    const now = new Date();
+    
+    // Se siamo prima di mezzanotte, tutto normale, esci.
+    if (now < DEADLINE_VOTI) return; 
+
+    // OLTRE LA MEZZANOTTE: Nascondi i voti e mostra il banner
+    voteCard.style.display = 'none';
+    if (voteTitle) voteTitle.style.display = 'none';
+    statusBanner.style.display = 'block';
+
+    const dbRef = ref(db);
+    
+    // Controlla se esiste la classifica ufficiale
+    get(child(dbRef, 'ClassificaUfficiale')).then(snapClassifica => {
+        if (!snapClassifica.exists()) {
+            // FASE 1: Mezzanotte passata, ma Conti non ha ancora parlato
+            statusBanner.innerHTML = `<h3>⏳ Votazioni chiuse!</h3><p>Attendiamo la classifica ufficiale</p>`;
+            return;
+        }
+
+        // La classifica esiste! Controlliamo i punteggi
+        get(child(dbRef, 'Punteggi')).then(snapPunteggi => {
+            if (!snapPunteggi.exists() || !snapPunteggi.hasChild(currentUser)) {
+                // FASE 2: Classifica uscita, ma punteggi non ancora calcolati
+                statusBanner.innerHTML = `<h3>⚙️ Relax</h3><p>Gli umpa lumpa stanno calcolando il tuo punteggio! Entro domani mattina sarà pronto!</p>`;
+                return;
+            }
+
+            const punteggi = snapPunteggi.val();
+            const mioPunteggio = punteggi[currentUser];
+
+            if (now < DEADLINE_VINCITORE) {
+                // FASE 3: Punteggi pronti, ma è prima delle 14:00
+                statusBanner.innerHTML = `
+                    <h3>🎯 Il tuo punteggio finale:</h3>
+                    <div class="score-display">${mioPunteggio}</div>
+                    <p>Torna alle 14:00 per scoprire chi ha vinto!</p>
+                `;
+            } else {
+                // FASE 4: Le 14:00 sono passate. RULLO DI TAMBURI!
+                let maxScore = -1;
+                let vincitore = "";
+                
+                for (let user in punteggi) {
+                    if (punteggi[user] > maxScore) {
+                        maxScore = punteggi[user];
+                        vincitore = user;
+                    }
+                }
+
+                statusBanner.innerHTML = `
+                    <h3>🥁 Rullo di tamburi 🥁</h3>
+                    <p style="font-size: 1.2em;">Il vincitore è:</p>
+                    <div class="winner-name">${vincitore}</div>
+                    <p style="font-size: 1.2em;">con <strong style="color:var(--gold);">${maxScore}</strong> punti!</p>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <p>Il tuo punteggio: <strong>${mioPunteggio}</strong></p>
+                `;
+            }
+        });
+    });
+}
+
+// --- STATISTICHE FOOTER ---
+function loadFooterStats() {
+    const dbRef = ref(db);
+    get(child(dbRef, 'Sanremo2026')).then(snap => {
+        if (snap.exists()) {
+            let voteCount = 0;
+            const uniqueUsers = new Set();
+            const data = snap.val();
+            
+            for (let artista in data) {
+                const votiArtista = data[artista];
+                
+                voteCount += Object.keys(votiArtista).length;
+                
+                for (let user in votiArtista) {
+                    uniqueUsers.add(user);
+                }
+            }
+            
+            totVotesEl.textContent = voteCount;
+            totUsersEl.textContent = uniqueUsers.size;
+        }
+    }).catch(error => {
+        console.error("Errore nel caricamento statistiche:", error);
     });
 }
 
@@ -432,3 +535,87 @@ function showToast(message, type = 'success') {
         toast.addEventListener('animationend', () => toast.remove());
     }, 3000);
 }
+
+// --- SCRIPT SEGRETO UMPA LUMPA (Admin) ---
+window.lanciaUmpaLumpa = async function() {
+    console.log("👷‍♂️ Umpa Lumpa al lavoro con logica blindata e anti-furbetti...");
+    const dbRef = ref(db);
+    
+    try {
+        const snapClassifica = await get(child(dbRef, 'ClassificaUfficiale'));
+        const snapVoti = await get(child(dbRef, 'Sanremo2026'));
+
+        if (!snapClassifica.exists()) return console.error("❌ Manca la Classifica Ufficiale!");
+        if (!snapVoti.exists()) return console.error("❌ Nessun voto trovato!");
+
+        const officialRank = snapClassifica.val(); 
+        const allVotes = snapVoti.val();
+        const updates = {};
+        
+        const uniqueUsers = new Set();
+        for (let artista in allVotes) {
+            for (let user in allVotes[artista]) {
+                uniqueUsers.add(user);
+            }
+        }
+
+        for (let user of uniqueUsers) {
+            let myRank = [];
+            
+            // A. Creiamo la lista completa e segniamo CHI HA VOTATO DAVVERO
+            officialRank.forEach(artista => {
+                let voto = 0; 
+                let haVotato = false; // <--- LA NUOVA ETICHETTA SALVAVITA
+                if (allVotes[artista] && allVotes[artista][user] !== undefined) {
+                    voto = parseFloat(allVotes[artista][user]);
+                    haVotato = true;
+                }
+                myRank.push({ artista: artista, voto: voto, haVotato: haVotato });
+            });
+
+            // B. Ordiniamo per voto e poi alfabeto
+            myRank.sort((a, b) => {
+                if (b.voto !== a.voto) return b.voto - a.voto;
+                return a.artista.localeCompare(b.artista); 
+            });
+
+            // C. Calcoliamo i punti base SOLO per i cantanti votati
+            let score = 0;
+            let correctTop3 = true;
+            
+            myRank.forEach((item, myPos) => {
+                const offPos = officialRank.indexOf(item.artista);
+                const diff = Math.abs(myPos - offPos);
+
+                // Assegna punti solo se ci ha messo la faccia (ha dato un voto)
+                if (item.haVotato) {
+                    if (diff === 0) score += 15;
+                    else if (diff === 1) score += 10;
+                    else if (diff === 2) score += 5;
+                    else if (diff === 3) score += 2;
+                }
+
+                // Controllo Top 3: Deve averli indovinati E votati!
+                if (myPos < 3) {
+                    if (!item.haVotato || diff !== 0) correctTop3 = false;
+                }
+                
+                // Bonus Ultimo: Deve averlo indovinato E votato!
+                if (myPos === myRank.length - 1 && offPos === officialRank.length - 1) {
+                    if (item.haVotato) score += 30;
+                }
+            });
+
+            if (correctTop3) score += 50;
+
+            updates[`Punteggi/${user}`] = score;
+        }
+
+        await update(dbRef, updates);
+        console.log("✅ Punteggi calcolati chiudendo la falla dell'ordine alfabetico!");
+        alert("✅ MAGIA COMPLETATA! Ricarica la pagina.");
+
+    } catch (err) {
+        console.error("❌ Errore durante il lavoro degli Umpa Lumpa:", err);
+    }
+};
