@@ -283,11 +283,11 @@ function checkPhases() {
 
                 statusBanner.innerHTML = `
                     <h3>🥁 Rullo di tamburi 🥁</h3>
-                    <p style="font-size: 1.2em;">Il vincitore è:</p>
+                    <p style="font-size: 1.2em;">La vincitrice è:</p>
                     <div class="winner-name">${vincitore}</div>
                     <p style="font-size: 1.2em;">con <strong style="color:var(--gold);">${maxScore}</strong> punti!</p>
                     <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
-                    <p>Il tuo punteggio: <strong>${mioPunteggio}</strong></p>
+                    <p>Il tuo punteggio: <strong>${mioPunteggio}</strong><br>Grazie di aver partecipato!❤️</p>
                 `;
             }
         });
